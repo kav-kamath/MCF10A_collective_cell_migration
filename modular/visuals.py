@@ -79,7 +79,7 @@ def plot_5x5(frames, cmap):
     axes = axes.flatten()
 
     for i in range(16):
-        axes[i].imshow(frames_for_plot[i], cmap=cmap, interpolation='nearest')
+        axes[i].imshow(frames[i], cmap=cmap, interpolation='nearest')
         axes[i].set_title(f"Frame {i + 1}")
 
     plt.tight_layout()
