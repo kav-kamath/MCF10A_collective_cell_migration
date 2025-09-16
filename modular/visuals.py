@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from matplotlib.animation import FuncAnimation, PillowWriter
 
+from MCF10A_collective_cell_migration.modular import cpm
+
 # visualization to show whats going on
 
 # putting together the animation
@@ -32,9 +34,10 @@ def plot_light_pattern(self, save_boolean=False, output_filename="light_pattern.
 
 def animate_simulation(frames, times, background_color=(1, 1, 1), save_boolean=True, output_filename="current_simulation.mp4"):
 
-    num_colors = np.max([np.max(frame) for frame in frames])
-    random_colors = np.random.rand(num_colors + 1, 3)
-    random_colors[0, :] = background_color  # set background
+    # custom colormap
+    num_colors = np.max([np.max(frame) for frame in frames])    # old color method (doesn't allow for change # of cells): num_colors = np.max(cpm.grid)
+    random_colors = np.random.rand(num_colors + 1, 3) # random rbg values
+    random_colors[0, :] = background_color  # set background color to white
 
     cmap = ListedColormap(random_colors)
 
@@ -46,7 +49,7 @@ def animate_simulation(frames, times, background_color=(1, 1, 1), save_boolean=T
         ax.set_title(f"Time: {times[frame_idx]:.5f}")
         return image,
 
-    ani = FuncAnimation(fig, update, frames=len(frames), interval=200, blit=True)
+    ani = FuncAnimation(fig, update, frames=len(frames), interval=100, blit=True)
 
     if save_boolean:
         ani.save(output_filename, writer=animation.FFMpegWriter(fps=5))
