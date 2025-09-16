@@ -28,3 +28,16 @@ def monte_carlo_step(self):
                   else:
                       self.grid[j_y, j_x] = old_j_value  # reject j -> i
         self.mc_time += 1 #increment time by 1 every time one full monte carlo step is complete (all N events have been attempted)
+        
+def mc_sim(cpm, max_time,):
+    frames_for_plot = [cpm.grid.copy()] #initialize
+    event_times = [cpm.mc_time] # initialize
+    
+    while cpm.mc_time < max_time:
+        prev_time = cpm.mc_time
+        monte_carlo_step(cpm)
+        event_times.append(cpm.mc_time)
+        #print(f"Time: {cpm.mc_time}")
+        frames_for_plot.append(cpm.grid.copy())
+    
+    return frames_for_plot, event_times

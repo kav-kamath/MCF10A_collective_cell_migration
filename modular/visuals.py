@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from matplotlib.animation import FuncAnimation, PillowWriter
 
-from MCF10A_collective_cell_migration.modular import cpm
+from cpm import *
 
 # visualization to show whats going on
 
@@ -55,49 +55,57 @@ def animate_simulation(frames, times, background_color=(1, 1, 1), save_boolean=T
         ani.save(output_filename, writer=animation.FFMpegWriter(fps=5))
 
     plt.close(fig)
-    return HTML(ani.to_jshtml())
+    #return HTML(ani.to_jshtml())
 
 
-
-
-# Create a 2x2 plot of the first four frames
-fig, axes = plt.subplots(2, 2, figsize=(10, 10))
-axes = axes.flatten()
-
-for i in range(4):
-    axes[i].imshow(frames_for_plot[i], cmap=cmap, interpolation='nearest')
-    axes[i].set_title(f"Frame {i + 1}")
-
-plt.tight_layout()
-plt.show()
-
-
+def plot_2x2(frames, cmap):
     
-# Create a 5x5 plot of the first 16 frames
-fig, axes = plt.subplots(4, 4, figsize=(20, 20))
-axes = axes.flatten()
+    # Create a 2x2 plot of the first four frames
+    fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+    axes = axes.flatten()
 
-for i in range(16):
-    axes[i].imshow(frames_for_plot[i], cmap=cmap, interpolation='nearest')
-    axes[i].set_title(f"Frame {i + 1}")
+    for i in range(4):
+        axes[i].imshow(frames[i], cmap=cmap, interpolation='nearest')
+        axes[i].set_title(f"Frame {i + 1}")
 
-plt.tight_layout()
-plt.show()
+    plt.tight_layout()
+    plt.show()
 
 
+def plot_5x5(frames, cmap):
+    
+    # Create a 5x5 plot of the first 16 frames
+    fig, axes = plt.subplots(4, 4, figsize=(20, 20))
+    axes = axes.flatten()
 
-# plot event times (like timeline, every dot represents 1 event)
-plt.figure(figsize=(10, 2))
-plt.hlines(1, event_times[0], event_times[-1], color='lightgray', linewidth=2)  # timeline line
-plt.eventplot(event_times, lineoffsets=1, colors='tab:blue', linelengths=0.3)
-plt.scatter(event_times, [1]*len(event_times), color='tab:blue', zorder=3)
-plt.yticks([])
-plt.xlabel("Simulation time")
-plt.title("Timeline of Gillespie events")
-plt.tight_layout()
-plt.show()
+    for i in range(16):
+        axes[i].imshow(frames_for_plot[i], cmap=cmap, interpolation='nearest')
+        axes[i].set_title(f"Frame {i + 1}")
 
-#get avg waiting time
-waiting_times = np.diff(event_times)
-avg_waiting_time = np.mean(waiting_times)
-print(f"Average waiting time between events: {avg_waiting_time:.4f}") # put avg waiting time on the graphs
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_event_times(event_times, sim_type="Gillespie"):
+    #get avg waiting time
+    waiting_times = np.diff(event_times)
+    avg_waiting_time = np.mean(waiting_times)
+
+    # plot event times (like timeline, every dot represents 1 event)
+    plt.figure(figsize=(10, 2))
+    plt.hlines(1, event_times[0], event_times[-1], color='lightgray', linewidth=2)  # timeline line
+    plt.eventplot(event_times, lineoffsets=1, colors='tab:blue', linelengths=0.3)
+    plt.scatter(event_times, [1]*len(event_times), color='tab:blue', zorder=3)
+    plt.yticks([])
+    plt.xlabel("Simulation time")
+    plt.title(f"Timeline of {sim_type} events")
+
+    plt.text(
+    x=event_times[0], 
+    y=1.1, 
+    s=f"Avg waiting time: {avg_waiting_time:.4f}", # put avg waiting time on top left
+    fontsize=12,
+    color='black')
+    
+    plt.tight_layout()
+    plt.show()
