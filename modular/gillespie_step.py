@@ -1,0 +1,71 @@
+import numpy as np
+
+def gillespie_step(self):
+    events = []
+    rates = []
+
+    old_hamiltonian = self.calculate_hamiltonian()
+    
+    # all possible copy events and their rates (probability of occuring)
+    for i_y in range(self.grid_size):
+        for i_x in range(self.grid_size):
+            for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                j_x, j_y = i_x + dx, i_y + dy
+                if 0 <= j_x < self.grid_size and 0 <= j_y < self.grid_size:
+                    if self.grid[i_y, i_x] != self.grid[j_y, j_x]:
+                        # calculate deltaH for this event
+                        old_j_value = self.grid[j_y, j_x]
+                        self.grid[j_y, j_x] = self.grid[i_y, i_x]
+                        new_hamiltonian = self.calculate_hamiltonian()
+                        self.grid[j_y, j_x] = old_j_value  # revert
+
+                        deltaH = new_hamiltonian - old_hamiltonian
+                        # rate: exp(-deltaH/T) if deltaH > 0, else 1
+                        if not np.isnan(deltaH):
+                            rate = np.exp(-deltaH / self.temperature) #1.0
+                        else:
+                            print("deltaH is nan")
+                        events.append(((i_x, i_y), (j_x, j_y)))
+                        rates.append(rate)
+                        
+    # cell empty evenst
+    for y in range(self.grid_size):
+        for x in range(self.grid_size):
+            if self.grid[y, x] != 0:
+                original_id = self.grid[y, x]
+                self.grid[y, x] = 0
+                new_hamiltonian = self.calculate_hamiltonian()
+                self.grid[y, x] = original_id  # revert
+
+                deltaH = new_hamiltonian - old_hamiltonian
+                rate = np.exp(-deltaH / self.temperature) if deltaH > 0 else 1.0
+                events.append(((x, y), "EMPTY"))
+                rates.append(rate)                    
+                                    
+    total_rate = np.sum(rates)
+    if total_rate < 1e-12:  # event veryyyy unlikely (make it total_rate==0 causing NAN error)
+        return  # no possible events
+
+    #print(events)
+    #print(rates)
+    #print(total_rate)
+    
+    
+    # proportionally choose which event occurs  
+    chosen_index = np.random.choice(len(events), p=np.array(rates)/total_rate)
+    chosen_event = events[chosen_index]        
+    
+    if chosen_event[1] == "EMPTY":
+        x, y = chosen_event[0]
+        self.grid[y, x] = 0
+    else:
+        (i_x, i_y), (j_x, j_y) = chosen_event
+        self.grid[j_y, j_x] = self.grid[i_y, i_x]
+    
+
+    # move forward in time, probability of any event occuring (like aggregated poisson)
+    # inverse transform sampling method
+    U = np.random.uniform() #choose random number from uniform dist [0, 1) 
+    delta_t = -np.log(U) / total_rate # waiting time for next event is expential; adds up to poisson process over many events
+    self.gill_time += delta_t
+    
