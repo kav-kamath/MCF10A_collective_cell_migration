@@ -4,3 +4,5 @@ from .monte_carlo_step import *
 from .gillespie_step import *
 from .visuals import *
 from .light import *
+
+# ^^ change to be specific "public" functions
