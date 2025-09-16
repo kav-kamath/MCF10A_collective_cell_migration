@@ -76,7 +76,9 @@ def gillespie_sim(cpm, max_time,):
     
     while cpm.gill_time < max_time:
         prev_time = cpm.gill_time
-        cpm.gillespie_step()
+        gillespie_step(cpm)
         event_times.append(cpm.gill_time)
         #print(f"Time: {cpm.gill_time}")
         frames_for_plot.append(cpm.grid.copy())
+    
+    return frames_for_plot, event_times
