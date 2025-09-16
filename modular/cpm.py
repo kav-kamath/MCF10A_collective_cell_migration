@@ -1,6 +1,12 @@
+
+# python functions
 import numpy as np
 from scipy.ndimage import label, binary_fill_holes
 from skimage.measure import perimeter
+
+# my files
+from cpm_initializations import *
+
 
 # full prelim CPM (Hamiltonian with deltaH_area & deltaH_perimeter & prelim deltaH_lum)
 
@@ -24,27 +30,26 @@ class CPM:
         else:
             self.light_pattern = np.zeros((grid_size, grid_size), dtype=int)  # default: all dark
 
-        # initialize cells on grid (random, ideal, space_filling)
-        if initialization == "random":
-          self.initialize_cells_random()
-        elif initialization == "ideal":
-          self.initialize_cells_ideal()
-        elif initialization == "space_filling":
-          self.initialize_cells_space_filling()
-        elif initialization == "voronoi":
-          self.initialize_cells_voronoi()
-        elif initialization == "custom1":
-          self.initialize_cells_custom1()
-        elif initialization == "custom2":
-          self.initialize_cells_custom2()
+                # Initialization dispatch
+        
+        init_methods = {
+            "random": initialize_cells_random,
+            "ideal": initialize_cells_ideal,
+            "space_filling": initialize_cells_space_filling,
+            "voronoi": initialize_cells_voronoi,
+            "custom1": initialize_cells_custom1,
+            "custom2": initialize_cells_custom2
+        }
+
+        if initialization in init_methods:
+            init_methods[initialization](self)
         else:
-          print("invalid initialization")
+            raise ValueError(f"Invalid initialization method: {initialization}")
 
         existing_cell_ids = np.unique(self.grid)
         existing_cell_ids = existing_cell_ids[existing_cell_ids != 0]
         self.num_cells = len(existing_cell_ids)
         
-
 
     ###### ACTUAL FUNCTIONS ###### ==> FEATURES OF CELL
 
