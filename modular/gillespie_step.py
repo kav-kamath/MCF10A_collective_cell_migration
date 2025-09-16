@@ -69,3 +69,14 @@ def gillespie_step(self):
     delta_t = -np.log(U) / total_rate # waiting time for next event is expential; adds up to poisson process over many events
     self.gill_time += delta_t
     
+    
+def gillespie_sim(cpm, max_time,):
+    frames_for_plot = [cpm.grid.copy()]
+    event_times = [cpm.gill_time]
+    
+    while cpm.gill_time < max_time:
+        prev_time = cpm.gill_time
+        cpm.gillespie_step()
+        event_times.append(cpm.gill_time)
+        #print(f"Time: {cpm.gill_time}")
+        frames_for_plot.append(cpm.grid.copy())
