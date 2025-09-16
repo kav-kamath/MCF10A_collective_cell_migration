@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 # all cpm initializations
 # figure out a better (non-hard coded way) to create cell of approx. circular shape to start with
