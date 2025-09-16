@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from matplotlib.animation import FuncAnimation, PillowWriter
 
-from cpm import *
+from .cpm import *
 
 # visualization to show whats going on
 
