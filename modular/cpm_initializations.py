@@ -1,5 +1,6 @@
 import random
 import numpy as np
+from .cpm import CPM
 
 # all cpm initializations
 # figure out a better (non-hard coded way) to create cell of approx. circular shape to start with
@@ -7,7 +8,7 @@ import numpy as np
 ###### ALL INITILIZATIONS ######
 
 ## RANDOM ##
-def initialize_cells_random(self): #choose cell centers randomly
+def initialize_cells_random(self: CPM): #choose cell centers randomly
     cell_ids = range(1, self.num_cells + 1)
 
     # new implementation: randomly choose cell centers, can totally overwrite previous cell if a cell center is
@@ -45,7 +46,7 @@ def initialize_cells_random(self): #choose cell centers randomly
     """
 
 ## IDEAL ##
-def initialize_cells_ideal(self): #choose cell centers such as to uniformly place cells across space
+def initialize_cells_ideal(self: CPM): #choose cell centers such as to uniformly place cells across space
     cell_id = 1
     for y in range(3, self.grid_size - 3, 7):
         for x in range(3, self.grid_size - 3, 7):
@@ -60,8 +61,10 @@ def initialize_cells_ideal(self): #choose cell centers such as to uniformly plac
             cell_id += 1
 
 ## SPACE_FILLING ##            
-def initialize_cells_space_filling(self):
-    self.initialize_cells_ideal() # build upon above, so cells are vaguely circular
+def initialize_cells_space_filling(self: CPM):
+    
+    initialize_cells_ideal(self) # build upon above, so cells are vaguely circular
+    
     # iterate through all spaces, looking for empty ones
     while 0 in self.grid:
         for y in range(0, self.grid_size):
@@ -78,7 +81,7 @@ def initialize_cells_space_filling(self):
                     self.grid[y, x] = random_id
 
 ## VORONOI ##
-def initialize_cells_voronoi(self):
+def initialize_cells_voronoi(self: CPM):
 
     center_method = "uniform"
 
@@ -124,9 +127,19 @@ def initialize_cells_voronoi(self):
             self.grid[y, x] = closest_cell_id
 
 ## CUSTOM (customize cell centers) ##
-def initialize_cells_custom1(self):        
+def initialize_cells_custom1(self: CPM, cell_centers: list[tuple[int, int]]):        
+    
+    assert len(cell_centers) == self.num_cells, (
+        f"{self.num_cells} cell centers expected, {len(cell_centers)} cell centers input"
+    )
+    for y, x in cell_centers:
+        assert 0 <= y < self.grid_size and 0 <= x < self.grid_size, (
+            f"Cell center {(y, x)} is out of bounds: must be within "
+            f"(4 ≤ y < {self.grid_size - 3}, 4 ≤ x < {self.grid_size - 3})"
+        )
+    
     cell_ids = range(1, self.num_cells + 1)
-
+    
     # specify cell centers
     cell_centers = [(1,1), (8,1), (1,8), (8,8)]
     
@@ -147,7 +160,8 @@ def initialize_cells_custom1(self):
     self.num_cells = len(existing_cell_ids)
 
 ## CUSTOM (customize entire grid) ##
-def initialize_cells_custom2(self):
+def initialize_cells_custom2(self: CPM):
+    
     custom_grid = [
         [1, 1, 1, 1, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [1, 1, 1, 1, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -171,4 +185,6 @@ def initialize_cells_custom2(self):
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]
-    self.grid = np.array(custom_grid, dtype=int)
+    
+    # can't directly assign self.grid (self.grid = np.array(custom_grid, dtype=int)) so need to overwrite matrix values instead
+    self.grid[0:self.grid_size, 0:self.grid_size] = np.array(custom_grid, dtype=int)
