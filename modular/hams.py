@@ -7,7 +7,7 @@ from .cpm import CPM
 ###### HELPER FUNCTIONS ###### ==> FEATURES OF CELL
 
 # updated to be skimage.measure.regionprops() perimeter
-def calculate_perimeter(self: CPM, cell_id):
+def _calculate_perimeter(self: CPM, cell_id):
 
     # skimage.measure.regionprops() perimeter
     binary_grid = (self.grid == cell_id)
@@ -15,7 +15,7 @@ def calculate_perimeter(self: CPM, cell_id):
 
     return perimeter_value
 
-def fraction_illuminated(self: CPM, cell_id):
+def _fraction_illuminated(self: CPM, cell_id):
 
     cell_mask = (self.grid == cell_id) # t/f mask of cell location
     light_mask = (self.light_pattern == 1) # t/f mask of light location
@@ -29,7 +29,7 @@ def fraction_illuminated(self: CPM, cell_id):
         return 0.0
     return area_in_light / total_area
 
-def cell_contains_holes(self: CPM, cell_id):
+def _cell_contains_holes(self: CPM, cell_id):
         
     cell_mask = (self.grid == cell_id) # binary mask for the cell
     filled_mask = binary_fill_holes(cell_mask) # fill holes in the cell mask
@@ -54,17 +54,17 @@ def calculate_hamiltonian(self: CPM):
             return np.inf  # positive infinity for disjoint parts
             
         #deltaH_ground: check for holes
-        if cell_contains_holes(self, cell_id):
+        if _cell_contains_holes(self, cell_id):
             return np.inf
             
         # calc area & perimeter
         area = np.sum(self.grid == cell_id)
-        perimeter = calculate_perimeter(self, cell_id)
+        perimeter = _calculate_perimeter(self, cell_id)
 
         # Energy terms for area and perimeter/area ratio
         hamiltonian += 0.2*np.abs(area - self.target_area) # deltaH_area
         hamiltonian += 0.8*(np.abs(((area**(1/2)) / perimeter) - self.target_ratio)) # deltaH_area/perimeter_ratio
-        hamiltonian -= fraction_illuminated(self, cell_id)  # no specific deltaH term as outlined in JP, but deltaH_lum for now
+        hamiltonian -= _fraction_illuminated(self, cell_id)  # no specific deltaH term as outlined in JP, but deltaH_lum for now
 
     return hamiltonian
 

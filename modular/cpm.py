@@ -1,4 +1,3 @@
-
 # python functions
 import numpy as np
 from scipy.ndimage import label, binary_fill_holes
@@ -11,6 +10,29 @@ from .cpm_initializations import *
 # full prelim CPM (Hamiltonian with deltaH_area & deltaH_perimeter & prelim deltaH_lum)
 
 class CPM:
+    
+    """
+        
+    Initialize a Cellular Potts Model (CPM) simulation grid with specified parameters.
+
+    The CPM class models cells on a 2D grid with a Hamiltonian that includes area, perimeter, 
+    and illumination-related energy terms. The constructor sets up the grid, initializes 
+    cells according to a chosen method, and applies a light pattern mask if provided.
+
+    Parameters:
+        grid_size : int - width and height of the square simulation grid.
+        num_cells : int - number of cells to initialize on the grid
+        target_area : float - ideal cell area to be used in the Hamiltonian energy calculations
+        target_ratio : float - ideal ratio of cell area to perimeter to be used in the Hamiltonian energy calculations
+        temperature : float - simulation temperature controlling stochastic acceptance in mc/gillespie step
+        initialization : str - name of method for initializing cells on the grid. Valid options are:
+            "random", "ideal", "space_filling", "voronoi", "custom1", or "custom2".
+        light_pattern : array-like or None - binary 2D array indicating regions of illumination.
+    Returns:
+        None (Initializes the CPM grid and parameters.)
+    """
+    
+    
     def __init__(self, grid_size, num_cells, target_area, target_ratio, temperature, initialization, light_pattern):
         self.grid_size = grid_size
         self.num_cells = num_cells
@@ -48,6 +70,12 @@ class CPM:
         existing_cell_ids = existing_cell_ids[existing_cell_ids != 0]
         self.num_cells = len(existing_cell_ids)
         
+    
+    
+    
+    
+    
+    
     
     # where hamiltonian function + helper functions used to be
     """
