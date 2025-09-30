@@ -43,6 +43,22 @@ def _cell_contains_holes(self: CPM, cell_id):
 ###### HAMILTONIAN FUNCTION ###### ==> DIFFERENT HAMILTONIANS
     
 def calculate_hamiltonian(self: CPM):
+    """
+    Compute the total Hamiltonian energy of the current CPM grid state.
+
+    This Hamiltonian includes the following energy contributions for each cell:
+    - Area deviation from the target area.
+    - Deviation of the perimeter-to-area ratio from the target ratio.
+    - Light consideration; energy of the cell is reduced if in an illuminated regions.
+
+    Parameters
+        self : CPM - CPM object as defined in cpm.py
+
+    Returns
+        hamiltonian : float - computed Hamiltonian energy value
+            Returns np.inf if a cell is disjoint or contains holes.
+    """
+    
     hamiltonian = 0
     cell_ids = np.unique(self.grid)
     cell_ids = cell_ids[cell_ids != 0]

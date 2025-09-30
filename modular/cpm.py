@@ -10,9 +10,7 @@ from .cpm_initializations import *
 # full prelim CPM (Hamiltonian with deltaH_area & deltaH_perimeter & prelim deltaH_lum)
 
 class CPM:
-    
     """
-        
     Initialize a Cellular Potts Model (CPM) simulation grid with specified parameters.
 
     The CPM class models cells on a 2D grid with a Hamiltonian that includes area, perimeter, 

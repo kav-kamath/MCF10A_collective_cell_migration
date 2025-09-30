@@ -4,6 +4,15 @@ from . import hams
 from .cpm import CPM
 
 def gillespie_step(cpm: CPM):
+    """
+    Perform a single Gillespie step given a Cellular Potts Models / CPM object (as defined in this package).
+    
+    Parameters:
+        cpm : CPM - CPM object as defined by CPM class in cpm.py
+    Returns:
+        None (Updates  CPM grid and gill_time in place.)
+    """
+    
     events = []
     rates = []
 
@@ -74,6 +83,19 @@ def gillespie_step(cpm: CPM):
     
     
 def gillespie_sim(cpm: CPM, max_time):
+    """
+    Run a Gillespie simulation on grid of a CPM object until specified simulation time is reached.
+    
+    Parameters
+        cpm : CPM - Cellular Potts Model / CPM object to simulate with
+        max_time : float - amount of time simulation will run until (arbitrary time units / units contrived from model)
+
+    Returns
+        frames_for_plot : list of np.ndarray - list of grid (2D NumPy arrays) at/after each Gillespie event
+        event_times : list of float - list each time a gillespie event occured, 1:1 corresponds to frames_for_plot
+            (arbitrary time units / units contrived from model)
+    """
+    
     frames_for_plot = [cpm.grid.copy()]
     event_times = [cpm.gill_time]
     
