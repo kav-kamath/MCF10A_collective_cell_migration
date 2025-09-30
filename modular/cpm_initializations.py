@@ -9,7 +9,6 @@ from .cpm import CPM
 
 ## RANDOM ##
 def initialize_cells_random(self: CPM): #choose cell centers randomly
-    
     """
     Initialize cells by placing a center randomly on the grid, then filling in a roughly cirular shape around the center.
     Repeated for each center.
@@ -60,7 +59,6 @@ def initialize_cells_random(self: CPM): #choose cell centers randomly
 
 ## IDEAL ##
 def initialize_cells_ideal(self: CPM): #choose cell centers such as to uniformly place cells across space
-        
     """
     Initialize cells to be non-overlapping and uniformly spaced across the grid, with grid filled (whitespace allowed).
 
@@ -85,7 +83,6 @@ def initialize_cells_ideal(self: CPM): #choose cell centers such as to uniformly
 
 ## SPACE_FILLING ##            
 def initialize_cells_space_filling(self: CPM):
-    
     """
     Initialize cells to be non-overlapping and uniformly spaced across the grid, with grid filled (whitespace NOT allowed).
 
@@ -117,7 +114,6 @@ def initialize_cells_space_filling(self: CPM):
 
 ## VORONOI ##
 def initialize_cells_voronoi(self: CPM):
-
     """
     Initialize cells by assigning pixels based on closest cell center (Voronoi tessellation).
     
@@ -174,7 +170,6 @@ def initialize_cells_voronoi(self: CPM):
 
 ## CUSTOM (customize cell centers) ##
 def initialize_cells_custom1(self: CPM, cell_centers: list[tuple[int, int]]):        
-    
     """
     Initialize cells with specified cell centers. Later listed cells may overlap with and overwrite formerly listed cells.
 
@@ -216,7 +211,6 @@ def initialize_cells_custom1(self: CPM, cell_centers: list[tuple[int, int]]):
 
 ## CUSTOM (customize entire grid) ##
 def initialize_cells_custom2(self: CPM):
-    
     """
     Initialize cells with hardcoded layout.
 
