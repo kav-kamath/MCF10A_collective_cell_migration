@@ -1,6 +1,6 @@
 import numpy as np
-import hams
 
+from . import hams
 from .cpm import CPM
 
 def gillespie_step(cpm: CPM):
@@ -73,7 +73,7 @@ def gillespie_step(cpm: CPM):
     cpm.gill_time += delta_t
     
     
-def gillespie_sim(cpm: CPM, max_time,):
+def gillespie_sim(cpm: CPM, max_time):
     frames_for_plot = [cpm.grid.copy()]
     event_times = [cpm.gill_time]
     
