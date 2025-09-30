@@ -18,7 +18,7 @@ class CPM:
         self.target_ratio = target_ratio
         self.temperature = temperature
         self.grid = np.zeros((grid_size, grid_size), dtype=int)
-        self.mc_time = 0
+        self.mc_step = 0
         self.gill_time = 0.0
         
         # initialize light pattern

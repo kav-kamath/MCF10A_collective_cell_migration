@@ -1,8 +1,9 @@
 import numpy as np
 import random
-import hams
+from . import hams
+from .cpm import CPM
 
-def monte_carlo_step(self):
+def monte_carlo_step(self: CPM):
         for _ in range(self.grid_size**2):  # N random grid points
             i_x, i_y = random.randint(0, self.grid_size - 1), random.randint(0, self.grid_size - 1)
             dx, dy = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
@@ -28,17 +29,17 @@ def monte_carlo_step(self):
                       pass  # accept j -> i
                   else:
                       self.grid[j_y, j_x] = old_j_value  # reject j -> i
-        self.mc_time += 1 #increment time by 1 every time one full monte carlo step is complete (all N events have been attempted)
+        self.mc_step += 1 #increment time by 1 every time one full monte carlo step is complete (all N events have been attempted)
         
-def mc_sim(cpm, max_time,):
+def mc_sim(cpm, num_steps):
     frames_for_plot = [cpm.grid.copy()] #initialize
-    event_times = [cpm.mc_time] # initialize
+    event_times = [cpm.mc_step] # initialize
     
-    while cpm.mc_time < max_time:
-        prev_time = cpm.mc_time
+    while cpm.mc_step < num_steps:
+        prev_time = cpm.mc_step
         monte_carlo_step(cpm)
-        event_times.append(cpm.mc_time)
-        #print(f"Time: {cpm.mc_time}")
+        event_times.append(cpm.mc_step)
+        print(f"Time: {cpm.mc_step}")
         frames_for_plot.append(cpm.grid.copy())
     
     return frames_for_plot, event_times
