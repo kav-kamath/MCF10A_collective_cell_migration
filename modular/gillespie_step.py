@@ -11,7 +11,7 @@ def gillespie_step(cpm: CPM):
         cpm : CPM - CPM object as defined by CPM class in cpm.py
     Returns:
         None (Updates  CPM grid and gill_time in place.)
-    """
+    """    
     
     events = []
     rates = []

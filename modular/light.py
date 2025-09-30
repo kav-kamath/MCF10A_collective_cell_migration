@@ -1,5 +1,15 @@
-# functions to create different light patterns
-# visualize light pattern
+import numpy as np
+from .cpm import CPM
+
+# light pattern function
+
+""""
+def light_function(y, x, t, function, self : CPM):
+    
+    #light_pattern = function(np.zeros((self.grid_size, self.grid_size), dtype=int))
+    
+    return(light_pattern)
+"""
 
 # hardcoded light pattern arrays for 21x21 testing
 

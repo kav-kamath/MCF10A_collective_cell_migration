@@ -20,7 +20,7 @@ from .cpm import *
 
 # visualize light pattern
 
-def plot_light_pattern(self, save_boolean=False, output_filename="light_pattern.png"):
+def plot_light_pattern(cpm, save_boolean=False, output_filename="light_pattern.png"):
     """
     Plot the binary light pattern applied to the simulation grid. Currently only works for static light pattern.
     
@@ -36,7 +36,7 @@ def plot_light_pattern(self, save_boolean=False, output_filename="light_pattern.
     """
     
     plt.figure(figsize=(5, 5))
-    plt.imshow(self.light_pattern, cmap='hot', interpolation='nearest')
+    plt.imshow(cpm.light_pattern, cmap='hot', interpolation='nearest')
     plt.title("Light Pattern")
     plt.colorbar(label="Light (0=off, 1=on)")
     

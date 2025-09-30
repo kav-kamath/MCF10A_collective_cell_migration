@@ -30,7 +30,6 @@ class CPM:
         None (Initializes the CPM grid and parameters.)
     """
     
-    
     def __init__(self, grid_size, num_cells, target_area, target_ratio, temperature, initialization, light_pattern):
         self.grid_size = grid_size
         self.num_cells = num_cells
@@ -67,77 +66,3 @@ class CPM:
         existing_cell_ids = np.unique(self.grid)
         existing_cell_ids = existing_cell_ids[existing_cell_ids != 0]
         self.num_cells = len(existing_cell_ids)
-        
-    
-    
-    
-    
-    
-    
-    
-    # where hamiltonian function + helper functions used to be
-    """
-    ###### ACTUAL FUNCTIONS ###### ==> FEATURES OF CELL
-
-    # updated to be skimage.measure.regionprops() perimeter
-    def calculate_perimeter(self, cell_id):
-
-        # skimage.measure.regionprops() perimeter
-        binary_grid = (self.grid == cell_id)
-        perimeter_value = perimeter(binary_grid, neighborhood = 8)
-
-        return perimeter_value
-
-    def fraction_illuminated(self, cell_id):
-
-        cell_mask = (self.grid == cell_id) # t/f mask of cell location
-        light_mask = (self.light_pattern == 1) # t/f mask of light location
-        
-        overlap = cell_mask & light_mask # AND of both masks, where both true
-
-        area_in_light = np.sum(overlap)
-        total_area = np.sum(cell_mask)
-        
-        if total_area == 0:
-            return 0.0
-        return area_in_light / total_area
-
-    def cell_contains_holes(self, cell_id):
-        
-        cell_mask = (self.grid == cell_id) # binary mask for the cell
-        filled_mask = binary_fill_holes(cell_mask) # fill holes in the cell mask
-
-        # compare original and filled masks - if equal, there are no holes
-        contains_holes = not np.array_equal(cell_mask, filled_mask)
-        return contains_holes
-
-    ###### ACTUAL FUNCTIONS ###### ==> HAMILTONIAN & STEP METHODS
-    
-    def calculate_hamiltonian(self):
-        hamiltonian = 0
-        cell_ids = np.unique(self.grid)
-        cell_ids = cell_ids[cell_ids != 0]
-        
-        for cell_id in cell_ids:
-            # deltaH_ground: check for disjoint parts
-            labeled_array, num_features = label(self.grid == cell_id)
-            if num_features > 1:
-               return np.inf  # positive infinity for disjoint parts
-            
-            #deltaH_ground: check for holes
-            if self.cell_contains_holes(cell_id):
-                return np.inf
-            
-            # calc area & perimeter
-            area = np.sum(self.grid == cell_id)
-            perimeter = self.calculate_perimeter(cell_id)
-
-            # Energy terms for area and perimeter/area ratio
-            hamiltonian += 0.2*np.abs(area - self.target_area) # deltaH_area
-            hamiltonian += 0.8*(np.abs(((area**(1/2)) / perimeter) - self.target_ratio)) # deltaH_area/perimeter_ratio
-            hamiltonian -= self.fraction_illuminated(cell_id)  # no specific deltaH term as outlined in JP, but deltaH_lum for now
-
-        return hamiltonian
-    """
-
-    

@@ -3,7 +3,7 @@ import random
 from . import hams
 from .cpm import CPM
 
-def monte_carlo_step(self: CPM):
+def monte_carlo_step(cpm: CPM):
     """
     Perform a single Monte Carlo step given a Cellular Potts Models / CPM object (as defined in this package).
     
@@ -14,32 +14,33 @@ def monte_carlo_step(self: CPM):
 
     """
     
-    for _ in range(self.grid_size**2):  # N random grid points
-        i_x, i_y = random.randint(0, self.grid_size - 1), random.randint(0, self.grid_size - 1)
+    
+    for _ in range(cpm.grid_size**2):  # N random grid points
+        i_x, i_y = random.randint(0, cpm.grid_size - 1), random.randint(0, cpm.grid_size - 1)
         dx, dy = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
         j_x, j_y = (i_x + dx), (i_y + dy)
 
         # if jx,jy is a valid grid point (no wrapping around)
-        if (0 <= j_x < self.grid_size) & (0 <= j_y < self.grid_size):
+        if (0 <= j_x < cpm.grid_size) & (0 <= j_y < cpm.grid_size):
             #if xi,xj and jx,jy have different cell IDs
-            if (self.grid[i_y, i_x] != self.grid[j_y, j_x]):
+            if (cpm.grid[i_y, i_x] != cpm.grid[j_y, j_x]):
 
                 #old hamiltonian with old j ID
-                old_j_value = self.grid[j_y, j_x]
-                old_hamiltonian = hams.calculate_hamiltonian(self)
+                old_j_value = cpm.grid[j_y, j_x]
+                old_hamiltonian = hams.calculate_hamiltonian(cpm)
 
                 # change j to i, calculate new hamiltonian
-                self.grid[j_y, j_x] = self.grid[i_y, i_x]
-                new_hamiltonian = hams.calculate_hamiltonian(self)
+                cpm.grid[j_y, j_x] = cpm.grid[i_y, i_x]
+                new_hamiltonian = hams.calculate_hamiltonian(cpm)
 
                 # deltaH
                 delta_hamiltonian = new_hamiltonian - old_hamiltonian
 
-                if (delta_hamiltonian <= 0) or (random.random() < np.exp(-delta_hamiltonian / self.temperature)):
+                if (delta_hamiltonian <= 0) or (random.random() < np.exp(-delta_hamiltonian / cpm.temperature)):
                     pass  # accept j -> i
                 else:
-                    self.grid[j_y, j_x] = old_j_value  # reject j -> i
-    self.mc_step += 1 #increment time by 1 every time one full monte carlo step is complete (all N events have been attempted)
+                    cpm.grid[j_y, j_x] = old_j_value  # reject j -> i
+    cpm.mc_step += 1 #increment time by 1 every time one full monte carlo step is complete (all N events have been attempted)
         
 def mc_sim(cpm, num_steps):
     """
