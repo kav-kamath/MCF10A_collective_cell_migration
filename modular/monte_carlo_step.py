@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import hams
 
 def monte_carlo_step(self):
         for _ in range(self.grid_size**2):  # N random grid points
@@ -14,11 +15,11 @@ def monte_carlo_step(self):
 
                   #old hamiltonian with old j ID
                   old_j_value = self.grid[j_y, j_x]
-                  old_hamiltonian = self.calculate_hamiltonian()
+                  old_hamiltonian = hams.calculate_hamiltonian(self)
 
                   # change j to i, calculate new hamiltonian
                   self.grid[j_y, j_x] = self.grid[i_y, i_x]
-                  new_hamiltonian = self.calculate_hamiltonian()
+                  new_hamiltonian = hams.calculate_hamiltonian(self)
 
                   # deltaH
                   delta_hamiltonian = new_hamiltonian - old_hamiltonian

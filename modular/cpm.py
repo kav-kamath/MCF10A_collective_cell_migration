@@ -30,8 +30,6 @@ class CPM:
         else:
             self.light_pattern = np.zeros((grid_size, grid_size), dtype=int)  # default: all dark
 
-                # Initialization dispatch
-        
         init_methods = {
             "random": initialize_cells_random,
             "ideal": initialize_cells_ideal,
@@ -50,7 +48,9 @@ class CPM:
         existing_cell_ids = existing_cell_ids[existing_cell_ids != 0]
         self.num_cells = len(existing_cell_ids)
         
-
+    
+    # where hamiltonian function + helper functions used to be
+    """
     ###### ACTUAL FUNCTIONS ###### ==> FEATURES OF CELL
 
     # updated to be skimage.measure.regionprops() perimeter
@@ -112,5 +112,6 @@ class CPM:
             hamiltonian -= self.fraction_illuminated(cell_id)  # no specific deltaH term as outlined in JP, but deltaH_lum for now
 
         return hamiltonian
+    """
 
     

@@ -1,4 +1,5 @@
 import numpy as np
+import hams
 
 from .cpm import CPM
 
@@ -6,7 +7,7 @@ def gillespie_step(cpm: CPM):
     events = []
     rates = []
 
-    old_hamiltonian = cpm.calculate_hamiltonian()
+    old_hamiltonian = hams.calculate_hamiltonian(cpm)
     
     # all possible copy events and their rates (probability of occuring)
     for i_y in range(cpm.grid_size):
@@ -18,7 +19,7 @@ def gillespie_step(cpm: CPM):
                         # calculate deltaH for this event
                         old_j_value = cpm.grid[j_y, j_x]
                         cpm.grid[j_y, j_x] = cpm.grid[i_y, i_x]
-                        new_hamiltonian = cpm.calculate_hamiltonian()
+                        new_hamiltonian = hams.calculate_hamiltonian(cpm)
                         cpm.grid[j_y, j_x] = old_j_value  # revert
 
                         deltaH = new_hamiltonian - old_hamiltonian
@@ -36,7 +37,7 @@ def gillespie_step(cpm: CPM):
             if cpm.grid[y, x] != 0:
                 original_id = cpm.grid[y, x]
                 cpm.grid[y, x] = 0
-                new_hamiltonian = cpm.calculate_hamiltonian()
+                new_hamiltonian = hams.calculate_hamiltonian(cpm)
                 cpm.grid[y, x] = original_id  # revert
 
                 deltaH = new_hamiltonian - old_hamiltonian
@@ -72,7 +73,7 @@ def gillespie_step(cpm: CPM):
     cpm.gill_time += delta_t
     
     
-def gillespie_sim(cpm, max_time,):
+def gillespie_sim(cpm: CPM, max_time,):
     frames_for_plot = [cpm.grid.copy()]
     event_times = [cpm.gill_time]
     
