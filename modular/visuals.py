@@ -66,7 +66,7 @@ def visualize_dynamic_light_pattern(light_patterns, times, background_color=(1, 
     """
 
     # custom colormap
-    cmap = ListedColormap([background_color, (1, 1, 0)])  # background color and yellow for light
+    cmap = ListedColormap([background_color, (0, 1, 1)])  # background color and green/blue for light
 
     fig, ax = plt.subplots()
     image = ax.imshow(light_patterns[0], cmap=cmap, interpolation='nearest')
