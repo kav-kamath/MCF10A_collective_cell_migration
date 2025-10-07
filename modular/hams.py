@@ -1,8 +1,7 @@
 import numpy as np
 from scipy.ndimage import label, binary_fill_holes
-from skimage.measure import perimeter
+from skimage.measure import perimeter, regionprops
 from .cpm import CPM
-
 
 ###### HELPER FUNCTIONS ###### ==> FEATURES OF CELL
 
@@ -16,7 +15,17 @@ def _calculate_perimeter(cpm: CPM, cell_id):
     return perimeter_value
 
 def _fraction_illuminated(cpm: CPM, cell_id):
-
+    
+    props = regionprops(label_image=cpm.grid, intensity_image=cpm.light_pattern)
+    region = next((r for r in props if r.label == cell_id), None)
+    
+    if region is not None:
+        return region.mean_intensity
+    else:
+        return 0.0
+    
+    # old implementation:
+    """
     cell_mask = (cpm.grid == cell_id) # t/f mask of cell location
     light_mask = (cpm.light_pattern == 1) # t/f mask of light location
         
@@ -28,19 +37,34 @@ def _fraction_illuminated(cpm: CPM, cell_id):
     if total_area == 0:
         return 0.0
     return area_in_light / total_area
+    """
 
 def _cell_contains_holes(cpm: CPM, cell_id):
-        
+    
+    cell_mask = (cpm.grid == cell_id).astype(np.uint8)  # binary mask for the cell
+    
+    # check that the cell has only one connected component
+    labeled_array, num_features = label(cell_mask) # possibly: intepreter misreading the type of self.grid, totally fine at runtime
+    assert num_features == 1, f"Expected exactly 1 connnected component, found {num_features}"
+
+    # get region properties (of interest: euler number)
+    props = regionprops(cell_mask)
+    region = props[0]  # only one region
+    
+    return region.euler_number != 1 # if no holes, euler_number = 1 
+
+    # old implementation
+    """    
     cell_mask = (cpm.grid == cell_id) # binary mask for the cell
     filled_mask = binary_fill_holes(cell_mask) # fill holes in the cell mask
 
     # compare original and filled masks - if equal, there are no holes
     contains_holes = not np.array_equal(cell_mask, filled_mask) # intepreter misreading the type of filled_mask, totally fine at runtime
     return contains_holes
-
-
+    """
 
 ###### HAMILTONIAN FUNCTION ###### ==> DIFFERENT HAMILTONIANS
+    
     
 def calculate_hamiltonian(cpm: CPM):
     """
