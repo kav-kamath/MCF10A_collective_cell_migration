@@ -76,14 +76,13 @@ def visualize_dynamic_light_pattern(light_patterns, times, background_color=(1, 
         ax.set_title(f"Time: {times[frame_idx]:.5f}")
         return image,
 
-    ani = FuncAnimation(fig, update, frames=len(light_patterns), interval=100, blit=True)
+    ani = FuncAnimation(fig, update, frames=len(light_patterns), interval=100, blit=False)
 
     if save_boolean:
         ani.save(output_filename, writer=animation.FFMpegWriter(fps=5))
 
     plt.close(fig)
     #return HTML(ani.to_jshtml())
-    
 
 def animate_simulation(frames, times, background_color=(1, 1, 1), save_boolean=True, output_filename="current_simulation.mp4"):
     """

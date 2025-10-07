@@ -3,9 +3,8 @@ from .cpm import CPM
 
 # light pattern function
 
-
 def dynamic_light_function_example(y, x, t):
-    return ((y+x) < t)
+    return ((y+x) <= t)
 
 
 def update_light(grid_size, light_function, time_step):
@@ -14,6 +13,7 @@ def update_light(grid_size, light_function, time_step):
 
     for y in range(grid_size):
         for x in range(grid_size):
+            #print(light_function(y, x, time_step))
             light_pattern[y, x] = light_function(y, x, time_step)
 
     return light_pattern
