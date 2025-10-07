@@ -30,7 +30,7 @@ class CPM:
         None (Initializes the CPM grid and parameters.)
     """
     
-    def __init__(self, grid_size, num_cells, target_area, target_ratio, temperature, initialization, light_pattern):
+    def __init__(self, grid_size, num_cells, target_area, target_ratio, temperature, initialization, light_pattern, light_function):
         self.grid_size = grid_size
         self.num_cells = num_cells
         self.target_area = target_area
@@ -39,6 +39,7 @@ class CPM:
         self.grid = np.zeros((grid_size, grid_size), dtype=int)
         self.mc_step = 0
         self.gill_time = 0.0
+        self.light_function = light_function
         
         # initialize light pattern
         if light_pattern is not None:

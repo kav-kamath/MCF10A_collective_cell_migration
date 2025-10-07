@@ -3,13 +3,16 @@ from .cpm import CPM
 
 # light pattern function
 
-""""
-def light_function(y, x, t, function, self : CPM):
-    
-    #light_pattern = function(np.zeros((self.grid_size, self.grid_size), dtype=int))
-    
-    return(light_pattern)
-"""
+
+def update_light(grid_size, light_function, time_step):
+
+    light_pattern = np.zeros((grid_size, grid_size), dtype=int)
+
+    for y in range(grid_size):
+        for x in range(grid_size):
+            light_pattern[y, x] = light_function(y, x, time_step)
+
+    return light_pattern
 
 # hardcoded light pattern arrays for 21x21 testing
 

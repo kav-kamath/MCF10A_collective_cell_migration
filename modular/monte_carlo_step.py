@@ -2,6 +2,7 @@ import numpy as np
 import random
 from . import hams
 from .cpm import CPM
+from .light import update_light
 
 def monte_carlo_step(cpm: CPM):
     """
@@ -13,6 +14,8 @@ def monte_carlo_step(cpm: CPM):
         None (Updates CPM grid and mc_step in place.)
 
     """
+    cpm.light_pattern[:,:] = update_light(cpm.grid_size, cpm.light_function, cpm.mc_step)
+
     current_hamiltonian = hams.calculate_hamiltonian(cpm)
 
     for _ in range(cpm.grid_size**2):  # N random grid points
