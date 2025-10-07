@@ -20,7 +20,7 @@ from .cpm import *
 
 # visualize light pattern
 
-def plot_light_pattern(cpm, save_boolean=False, output_filename="light_pattern.png"):
+def plot_static_light_pattern(cpm, save_boolean=False, output_filename="static_light_pattern.png"):
     """
     Plot the binary light pattern applied to the simulation grid. Currently only works for static light pattern.
     
@@ -45,6 +45,45 @@ def plot_light_pattern(cpm, save_boolean=False, output_filename="light_pattern.p
     
     plt.show()
 
+
+def visualize_dynamic_light_pattern(light_patterns, times, background_color=(1, 1, 1), save_boolean=True, output_filename="dynamic_light_pattern.mp4"):
+    
+    """
+    Create (and optionally save to file) animation of dynamic light pattern over the course of a simulation.
+
+    Parameters
+        light_patterns : list of np.ndarray - list of 2D arrays representing light patterns at each time point
+        times : list of float - corresponding simulation times(gillespie)/steps(monte carlo) for each frame
+        background_color : tuple, optional - RGB values for background
+            Default is white: (1, 1, 1)
+        save_boolean : bool, optional - if True, the animation is saved to a file
+            Default is True.
+        output_filename : str, optional - Name of the file to save the animation to.
+            Default is "dynamic_light_pattern.mp4".
+            
+    Returns
+        None (Creates and optionally saves the animation to file. Does not display it.)
+    """
+
+    # custom colormap
+    cmap = ListedColormap([background_color, (1, 1, 0)])  # background color and yellow for light
+
+    fig, ax = plt.subplots()
+    image = ax.imshow(light_patterns[0], cmap=cmap, interpolation='nearest')
+
+    def update(frame_idx):
+        image.set_array(light_patterns[frame_idx])
+        ax.set_title(f"Time: {times[frame_idx]:.5f}")
+        return image,
+
+    ani = FuncAnimation(fig, update, frames=len(light_patterns), interval=100, blit=True)
+
+    if save_boolean:
+        ani.save(output_filename, writer=animation.FFMpegWriter(fps=5))
+
+    plt.close(fig)
+    #return HTML(ani.to_jshtml())
+    
 
 def animate_simulation(frames, times, background_color=(1, 1, 1), save_boolean=True, output_filename="current_simulation.mp4"):
     """

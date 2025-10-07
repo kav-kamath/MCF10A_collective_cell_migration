@@ -4,6 +4,10 @@ from .cpm import CPM
 # light pattern function
 
 
+def dynamic_light_function_example(y, x, t):
+    return ((y+x) < t)
+
+
 def update_light(grid_size, light_function, time_step):
 
     light_pattern = np.zeros((grid_size, grid_size), dtype=int)

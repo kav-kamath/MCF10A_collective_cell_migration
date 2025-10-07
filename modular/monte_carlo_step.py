@@ -94,6 +94,7 @@ def mc_sim(cpm, num_steps):
     """    
     
     frames_for_plot = [cpm.grid.copy()] #initialize
+    light_patterns = [cpm.light_pattern.copy()] #initialize
     event_times = [cpm.mc_step] # initialize
     
     while cpm.mc_step <= num_steps:
@@ -102,5 +103,6 @@ def mc_sim(cpm, num_steps):
         event_times.append(cpm.mc_step)
         print(f"Time: {cpm.mc_step}")
         frames_for_plot.append(cpm.grid.copy())
-    
-    return frames_for_plot, event_times
+        light_patterns.append(cpm.light_pattern.copy())
+
+    return frames_for_plot, light_patterns, event_times
