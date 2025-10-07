@@ -30,7 +30,7 @@ class CPM:
         None (Initializes the CPM grid and parameters.)
     """
     
-    def __init__(self, grid_size, num_cells, target_area, target_ratio, temperature, initialization, light_pattern, light_function):
+    def __init__(self, grid_size, num_cells, target_area, target_ratio, temperature, initialization, light_function, light_pattern=None):
         self.grid_size = grid_size
         self.num_cells = num_cells
         self.target_area = target_area

@@ -2,6 +2,7 @@ import numpy as np
 
 from . import hams
 from .cpm import CPM
+from .light import update_light
 
 def gillespie_step(cpm: CPM):
     """
@@ -12,6 +13,8 @@ def gillespie_step(cpm: CPM):
     Returns:
         None (Updates  CPM grid and gill_time in place.)
     """    
+    
+    cpm.light_pattern[:,:] = update_light(cpm.grid_size, cpm.light_function, cpm.gill_time)
     
     events = []
     rates = []
@@ -97,6 +100,7 @@ def gillespie_sim(cpm: CPM, max_time):
     """
     
     frames_for_plot = [cpm.grid.copy()]
+    light_patterns = [cpm.light_pattern.copy()]
     event_times = [cpm.gill_time]
     
     while cpm.gill_time < max_time:
@@ -105,5 +109,6 @@ def gillespie_sim(cpm: CPM, max_time):
         event_times.append(cpm.gill_time)
         #print(f"Time: {cpm.gill_time}")
         frames_for_plot.append(cpm.grid.copy())
-    
-    return frames_for_plot, event_times
+        light_patterns.append(cpm.light_pattern.copy())
+
+    return frames_for_plot, light_patterns, event_times
