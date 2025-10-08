@@ -69,14 +69,14 @@ def visualize_dynamic_light_pattern(light_patterns, times, background_color=(1, 
     cmap = ListedColormap([background_color, (0, 1, 1)])  # background color and green/blue for light
 
     fig, ax = plt.subplots()
-    image = ax.imshow(light_patterns[0], cmap=cmap, interpolation='nearest')
+    image = ax.imshow(light_patterns[0], cmap=cmap, interpolation='nearest', vmax=1)
 
     def update(frame_idx):
         image.set_array(light_patterns[frame_idx])
         ax.set_title(f"Time: {times[frame_idx]:.5f}")
         return image,
 
-    ani = FuncAnimation(fig, update, frames=len(light_patterns), interval=100, blit=False)
+    ani = FuncAnimation(fig, update, frames=len(light_patterns), interval=100, blit=True)
 
     if save_boolean:
         ani.save(output_filename, writer=animation.FFMpegWriter(fps=5))
