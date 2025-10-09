@@ -4,8 +4,7 @@ from scipy.ndimage import label, binary_fill_holes
 from skimage.measure import perimeter
 
 # my files
-from MCF10A_collective_cell_migration import modular
-from modular.cpm_initializations import *
+from .cpm_initializations import *
 
 
 # full prelim CPM (Hamiltonian with deltaH_area & deltaH_perimeter & prelim deltaH_lum)
