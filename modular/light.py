@@ -1,11 +1,32 @@
 import numpy as np
 from .cpm import CPM
 
-# light pattern function
+# STATIC LIGHT PATTERN FUNCTIONS
 
-def dynamic_light_function_example(y, x, t):
-    return ((y+x) <= t)
+def static_circle_light(y, x, t):
+    center = 10
+    radius = 8
+    return ((y - center)**2 + (x - center)**2) <= radius**2
 
+def static_left_half_light(y, x, t):
+    return x <= 10
+
+def static_right_half_light(y, x, t):
+    return x > 10
+
+
+# DYNAMIC LIGHT PATTERN FUNCTIONS
+
+def light_spreading_from_corner(y, x, t):
+    return ((y+x) <= 0.2*t)
+
+def shrinking_circle_light(y, x, t):
+    center = 10
+    radius = 5 - 0.5*t
+    return ((y - center)**2 + (x - center)**2) <= radius**2
+
+
+# LIGHTING UPDATING FUNCTION
 
 def update_light(grid_size, light_function, time_step):
 
@@ -23,6 +44,9 @@ def update_light(grid_size, light_function, time_step):
     """
 
     return light_pattern
+
+
+
 
 # hardcoded light pattern arrays for 21x21 testing
 
