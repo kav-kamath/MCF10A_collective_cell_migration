@@ -4,6 +4,7 @@ from scipy.ndimage import label, binary_fill_holes
 from skimage.measure import perimeter
 
 # my files
+from MCF10A_collective_cell_migration import modular
 from modular.cpm_initializations import *
 
 
@@ -29,11 +30,12 @@ class CPM:
     Returns:
         None (Initializes the CPM grid and parameters.)
     """
-    
-    def __init__(self, grid_size, num_cells, target_area, target_ratio, temperature, initialization, light_function, light_pattern=None):
+
+    def __init__(self, grid_size, num_cells, target_area, target_perimeter, target_ratio, temperature, initialization, light_function, light_pattern=None):
         self.grid_size = grid_size
         self.num_cells = num_cells
         self.target_area = target_area
+        self.target_perimeter = target_perimeter
         self.target_ratio = target_ratio
         self.temperature = temperature
         self.grid = np.zeros((grid_size, grid_size), dtype=int)
