@@ -5,7 +5,7 @@ from .cpm import CPM
 
 def static_circle_light(y, x, t):
     center = 10
-    radius = 8
+    radius = 7.5
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
 def static_left_half_light(y, x, t):
@@ -14,6 +14,8 @@ def static_left_half_light(y, x, t):
 def static_right_half_light(y, x, t):
     return x > 10
 
+def no_light (y, x, t):
+    return x*0
 
 # DYNAMIC LIGHT PATTERN FUNCTIONS
 
@@ -41,9 +43,10 @@ def update_light(grid_size, light_function, time_step):
         for x in range(grid_size):
             #print(light_function(y, x, time_step))
             light_pattern[y, x] = light_function(y, x, time_step)
-    """
-
+            
+            
     return light_pattern
+    """
 
 
 
