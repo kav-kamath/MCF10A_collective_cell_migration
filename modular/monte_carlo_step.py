@@ -101,7 +101,7 @@ def mc_sim(cpm, num_steps):
         prev_time = cpm.mc_step
         monte_carlo_step(cpm)
         event_times.append(cpm.mc_step)
-        print(f"Time: {cpm.mc_step}")
+        #print(f"Time: {cpm.mc_step}")
         frames_for_plot.append(cpm.grid.copy())
         light_patterns.append(cpm.light_pattern.copy())
 
