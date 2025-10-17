@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.ndimage import label, binary_fill_holes
-from skimage.measure import perimeter, regionprops
+from skimage.measure import perimeter_crofton, regionprops
 from .cpm import CPM
 
 ###### HELPER FUNCTIONS ###### ==> FEATURES OF CELL
@@ -10,7 +10,7 @@ def _calculate_perimeter(cpm: CPM, cell_id):
 
     # skimage.measure.regionprops() perimeter
     binary_grid = (cpm.grid == cell_id)
-    perimeter_value = perimeter(binary_grid, neighborhood = 8)
+    perimeter_value = perimeter_crofton(binary_grid, directions=4)
 
     return perimeter_value
 
@@ -102,8 +102,10 @@ def calculate_hamiltonian(cpm: CPM):
         perimeter = _calculate_perimeter(cpm, cell_id)
 
         # Energy terms for area and perimeter/area ratio
-        hamiltonian += 0.2*np.abs(area - cpm.target_area) # deltaH_area
-        hamiltonian += 40*np.abs(perimeter-cpm.target_perimeter) # deltaH_perimeter
+        print("area delta: ", (area - cpm.target_area))
+        hamiltonian += 10*np.abs(area - cpm.target_area) # deltaH_area
+        print("perimeter delta: ", (perimeter - cpm.target_perimeter))
+        hamiltonian += np.abs(perimeter-cpm.target_perimeter) # deltaH_perimeter
         #hamiltonian += 0.8*(np.abs(((area**(1/2)) / perimeter) - cpm.target_ratio)) # deltaH_area/perimeter_ratio
         hamiltonian -= 10 * _fraction_illuminated(cpm, cell_id)  # no specific deltaH term as outlined in JP, but deltaH_lum for now
 
