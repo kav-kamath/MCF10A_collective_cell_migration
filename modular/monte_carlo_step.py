@@ -17,6 +17,7 @@ def monte_carlo_step(cpm: CPM):
     cpm.light_pattern[:,:] = update_light(cpm.grid_size, cpm.light_function, cpm.mc_step)
 
     current_hamiltonian = hams.calculate_hamiltonian(cpm)
+    print("current: ", current_hamiltonian)
 
     for _ in range(cpm.grid_size**2):  # N random grid points
         i_x, i_y = random.randint(0, cpm.grid_size - 1), random.randint(0, cpm.grid_size - 1)
@@ -35,17 +36,24 @@ def monte_carlo_step(cpm: CPM):
         old_j_value = cpm.grid[j_y, j_x]
         cpm.grid[j_y, j_x] = cpm.grid[i_y, i_x]
         new_hamiltonian = hams.calculate_hamiltonian(cpm)
+        print("new: ", new_hamiltonian)
 
         # deltaH
         delta_hamiltonian = new_hamiltonian - current_hamiltonian
+        print("delta: ", delta_hamiltonian)
 
         if (delta_hamiltonian <= 0) or (random.random() < np.exp(-delta_hamiltonian / cpm.temperature)):
             current_hamiltonian = new_hamiltonian
+            print("move accepted")
+            print("-----move over------")
 
         else:
             cpm.grid[j_y, j_x] = old_j_value  # reject j -> i
+            print("move rejected")
+            print("-----move over------")
 
     cpm.mc_step += 1  # increment time by 1 every time one full monte carlo step is complete (all N events have been attempted)
+    print("-----mc step over------")
 
     # old implementation: pick N random grid points, attempt copy for each    
     """
