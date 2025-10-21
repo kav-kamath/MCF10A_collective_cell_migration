@@ -5,7 +5,7 @@ from .cpm import CPM
 
 def static_circle_light(y, x, t):
     center = 10
-    radius = 7.5
+    radius = 5
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
 def static_left_half_light(y, x, t):
