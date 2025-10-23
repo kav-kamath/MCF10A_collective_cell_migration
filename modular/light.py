@@ -28,12 +28,11 @@ def shrinking_circle_light(y, x, t):
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
 def moving_bar_light(y, x , t):
-    height = 3 # number of pixels
-
-    speed = 0.5
+    width = 3 # number of pixels
+    speed = 1 #some scaler with respect to time
 
     top = int(t * speed)
-    bottom = int(top + height)
+    bottom = int(top + width)
 
     return (y >= top) & (y <= bottom)
     
