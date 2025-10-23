@@ -10,7 +10,7 @@ def _calculate_perimeter(cpm: CPM, cell_id):
 
     # skimage.measure.regionprops() perimeter
     binary_grid = (cpm.grid == cell_id)
-    perimeter_value = perimeter(binary_grid, neighborhood=4)
+    perimeter_value = perimeter_crofton(binary_grid, directions=4)
 
     return perimeter_value
 
@@ -105,12 +105,12 @@ def calculate_hamiltonian(cpm: CPM):
         hamiltonian += 10*np.power(np.abs(area - cpm.target_area), 2) # deltaH_area
         hamiltonian += np.power(np.abs(perimeter-cpm.target_perimeter), 2) # deltaH_perimeter
         #hamiltonian += 0.8*(np.abs(((area**(1/2)) / perimeter) - cpm.target_ratio)) # deltaH_area/perimeter_ratio
-        hamiltonian -= 50 * _fraction_illuminated(cpm, cell_id)  # no specific deltaH term as outlined in JP, but deltaH_lum for now
+        hamiltonian -= np.power(100*_fraction_illuminated(cpm, cell_id), 1.75) # no specific deltaH term as outlined in JP, but deltaH_lum for now
         
         # print statements
-        print("Cell ID: ", cell_id)
+        #print("Cell ID: ", cell_id)
         #print("area delta: ", (area - cpm.target_area))
-        print("perimeter, perimeter delta: ", perimeter, (perimeter - cpm.target_perimeter))
+        #print("perimeter, perimeter delta: ", perimeter, (perimeter - cpm.target_perimeter))
         
 
     return hamiltonian

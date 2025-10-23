@@ -19,7 +19,7 @@ def monte_carlo_step(cpm: CPM):
     current_hamiltonian = hams.calculate_hamiltonian(cpm)
     #print("current: ", current_hamiltonian)
 
-    for _ in range(cpm.grid_size**2):  # N random grid points
+    for n in range(cpm.grid_size**2):  # N random grid points
         i_x, i_y = random.randint(0, cpm.grid_size - 1), random.randint(0, cpm.grid_size - 1)
         dx, dy = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
         j_x, j_y = (i_x + dx), (i_y + dy)
@@ -44,13 +44,13 @@ def monte_carlo_step(cpm: CPM):
 
         if (delta_hamiltonian <= 0) or (random.random() < np.exp(-delta_hamiltonian / cpm.temperature)):
             current_hamiltonian = new_hamiltonian
-            print("move accepted")
-            print("-----move over------")
+            print(f"move {n} accepted")
+            #print("-----move over------")
 
         else:
             cpm.grid[j_y, j_x] = old_j_value  # reject j -> i
-            print("move rejected")
-            print("-----move over------")
+            print(f"move {n} rejected")
+            #print("-----move over------")
 
     print(f"-----mc step {cpm.mc_step} over------")
     cpm.mc_step += 1  # increment time by 1 every time one full monte carlo step is complete (all N events have been attempted)
