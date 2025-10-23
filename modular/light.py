@@ -5,7 +5,7 @@ from .cpm import CPM
 
 def static_circle_light(y, x, t):
     center = 10
-    radius = 5
+    radius = 8
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
 def static_left_half_light(y, x, t):
@@ -27,7 +27,16 @@ def shrinking_circle_light(y, x, t):
     radius = 5 - 0.5*t
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
+def moving_bar_light(y, x , t):
+    height = 3 # number of pixels
 
+    speed = 0.5
+
+    top = int(t * speed)
+    bottom = int(top + height)
+
+    return (y >= top) & (y <= bottom)
+    
 # LIGHTING UPDATING FUNCTION
 
 def update_light(grid_size, light_function, time_step):
