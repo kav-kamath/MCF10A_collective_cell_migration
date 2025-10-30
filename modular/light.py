@@ -55,9 +55,10 @@ def multiple_moving_bars_light(y, x , t):
     for i in range(num_bars):
         top = int((t*speed + i*spatial_period) % y.shape[0])
         bottom = int(top + width)
-        if bottom < top:
+    
+        if bottom < top: # wrap around
             light_mask |= (y >= top) | (y <= bottom)
-        else:
+        else: # normal case
             light_mask |= (y >= top) & (y <= bottom)
     
     return light_mask
