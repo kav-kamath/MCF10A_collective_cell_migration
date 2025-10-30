@@ -103,7 +103,7 @@ def calculate_hamiltonian(cpm: CPM):
 
         # Energy terms for area and perimeter/area ratio
         hamiltonian += 10*np.power(np.abs(area - cpm.target_area), 2) # deltaH_area
-        hamiltonian += np.power(np.abs(perimeter-cpm.target_perimeter), 2) # deltaH_perimeter
+        hamiltonian += np.power(np.abs(perimeter-cpm.target_perimeter), 4) # deltaH_perimeter
         #hamiltonian += 0.8*(np.abs(((area**(1/2)) / perimeter) - cpm.target_ratio)) # deltaH_area/perimeter_ratio
         hamiltonian -= np.power(100*_fraction_illuminated(cpm, cell_id), 1.75) # no specific deltaH term as outlined in JP, but deltaH_lum for now
         

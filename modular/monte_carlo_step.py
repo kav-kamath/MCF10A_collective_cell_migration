@@ -3,6 +3,7 @@ import random
 from . import hams
 from .cpm import CPM
 from .light import update_light
+from tqdm import tqdm
 
 def monte_carlo_step(cpm: CPM):
     """
@@ -44,15 +45,15 @@ def monte_carlo_step(cpm: CPM):
 
         if (delta_hamiltonian <= 0) or (random.random() < np.exp(-delta_hamiltonian / cpm.temperature)):
             current_hamiltonian = new_hamiltonian
-            print(f"move {n} accepted")
+            #print(f"move {n} accepted")
             #print("-----move over------")
 
         else:
             cpm.grid[j_y, j_x] = old_j_value  # reject j -> i
-            print(f"move {n} rejected")
+            #print(f"move {n} rejected")
             #print("-----move over------")
 
-    print(f"-----mc step {cpm.mc_step} over------")
+    #print(f"-----mc step {cpm.mc_step} over------")
     cpm.mc_step += 1  # increment time by 1 every time one full monte carlo step is complete (all N events have been attempted)
 
 
@@ -106,8 +107,9 @@ def mc_sim(cpm, num_steps):
     light_patterns = [cpm.light_pattern.copy()] #initialize
     event_times = [cpm.mc_step] # initialize
     
-    while cpm.mc_step <= num_steps:
-        prev_time = cpm.mc_step
+    #while cpm.mc_step <= num_steps:
+    for _ in tqdm(range(cpm.mc_step, num_steps), desc="Monte Carlo Simulation"):
+        #prev_time = cpm.mc_step
         monte_carlo_step(cpm)
         event_times.append(cpm.mc_step)
         #print(f"Time: {cpm.mc_step}")

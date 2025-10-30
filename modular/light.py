@@ -5,7 +5,7 @@ from .cpm import CPM
 
 def static_circle_light(y, x, t):
     center = 10
-    radius = 8
+    radius = 7.5
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
 def static_left_half_light(y, x, t):
@@ -24,7 +24,7 @@ def light_spreading_from_corner(y, x, t):
 
 def shrinking_circle_light(y, x, t):
     center = 10
-    radius = 5 - 0.5*t
+    radius = 7.5 - 0.05*t
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
 def moving_bar_light(y, x , t):
@@ -35,7 +35,34 @@ def moving_bar_light(y, x , t):
     bottom = int(top + width)
 
     return (y >= top) & (y <= bottom)
+
+def multiple_moving_bars_light(y, x , t):
     
+    #num_bars = 5
+    #width = 3 # number of pixels
+    #distance_between_bars = 2
+    #speed = 1 #some scaler with respect to time
+
+    spatial_period = 10                              # width + distance_between_bars
+    duty_cycle = 0.3                                # width / spatial_period (fraction of period that is lit up)
+    width = spatial_period * duty_cycle
+    num_bars = int(y.shape[0] / spatial_period)
+    speed = 0.25
+    
+    # mask for y true(1)/false(0)
+    light_mask = np.zeros(y.shape, dtype=bool)
+    
+    for i in range(num_bars):
+        top = int((t*speed + i*spatial_period) % y.shape[0])
+        bottom = int(top + width)
+        if bottom < top:
+            light_mask |= (y >= top) | (y <= bottom)
+        else:
+            light_mask |= (y >= top) & (y <= bottom)
+    
+    return light_mask
+
+
 # LIGHTING UPDATING FUNCTION
 
 def update_light(grid_size, light_function, time_step):
