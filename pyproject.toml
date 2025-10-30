@@ -1,0 +1,24 @@
+[project]
+name = "mcf10amigration"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "kav-kamath", email = "kk1070@princeton.edu" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "ffmpeg-python>=0.2.0",
+    "jupyter>=1.1.1",
+    "matplotlib>=3.10.7",
+    "scikit-image>=0.25.2",
+    "scipy>=1.15.3",
+    "tqdm>=4.67.1",
+]
+
+[project.scripts]
+mcf10a-collective-cell-migration = "mcf10a_collective_cell_migration:main"
+
+[build-system]
+requires = ["uv_build>=0.9.6,<0.10.0"]
+build-backend = "uv_build"

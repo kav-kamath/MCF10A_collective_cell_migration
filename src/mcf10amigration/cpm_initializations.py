@@ -246,3 +246,12 @@ def initialize_cells_custom2(cpm: CPM):
     
     # can't directly assign self.grid (self.grid = np.array(custom_grid, dtype=int)) so need to overwrite matrix values instead
     cpm.grid[0:cpm.grid_size, 0:cpm.grid_size] = np.array(custom_grid, dtype=int)
+    
+init_methods = {
+    "random": initialize_cells_random,
+    "ideal": initialize_cells_ideal,
+    "space_filling": initialize_cells_space_filling,
+    "voronoi": initialize_cells_voronoi,
+    "custom1": initialize_cells_custom1,
+    "custom2": initialize_cells_custom2
+}

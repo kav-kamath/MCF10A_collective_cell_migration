@@ -4,8 +4,7 @@ from scipy.ndimage import label, binary_fill_holes
 from skimage.measure import perimeter
 
 # my files
-from modular.cpm_initializations import *
-
+#from .cpm_initializations import init_methods
 
 # full prelim CPM (Hamiltonian with deltaH_area & deltaH_perimeter & prelim deltaH_lum)
 
@@ -51,19 +50,12 @@ class CPM:
         else:
             self.light_pattern = np.zeros((grid_size, grid_size), dtype=int)  # default: all dark
 
-        init_methods = {
-            "random": initialize_cells_random,
-            "ideal": initialize_cells_ideal,
-            "space_filling": initialize_cells_space_filling,
-            "voronoi": initialize_cells_voronoi,
-            "custom1": initialize_cells_custom1,
-            "custom2": initialize_cells_custom2
-        }
-
-        if initialization in init_methods:
-            init_methods[initialization](self)
-        else:
-            raise ValueError(f"Invalid initialization method: {initialization}")
+        self.initialization = initialization
+        #if initialization in init_methods:
+            #init_methods[initialization](self)
+        #    pass
+        #else:
+        #    raise ValueError(f"Invalid initialization method: {initialization}")
 
         existing_cell_ids = np.unique(self.grid)
         existing_cell_ids = existing_cell_ids[existing_cell_ids != 0]
