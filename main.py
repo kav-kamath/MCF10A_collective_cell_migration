@@ -3,10 +3,11 @@
 import numpy as np
 import random
 import os
+from mcf10amigration.cpm_initializations import *
 
 # my functions
 
-from modular import *
+from mcf10amigration import *
 
 grid_size = 28
 num_cells = 5 #relevant if using initialize_cells_random or initiliaze_cells_voronoi when constructing CPM
@@ -19,7 +20,7 @@ light_function = light.multiple_moving_bars_light
 
 #output_folder = "trials_2cell_perim0_no_light"
 
-cpm = CPM(grid_size, num_cells, target_area, target_perimeter, target_ratio, temperature, "ideal", light_function)
+cpm = CPM(grid_size, num_cells, target_area, target_perimeter, target_ratio, temperature, initialize_cells_ideal, light_function)
 
 #frames_for_plot, event_times = gillespie_sim(cpm, max_time=0.008)
 frames_for_plot, light_patterns, event_times = mc_sim(cpm, num_steps=5)

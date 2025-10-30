@@ -1,8 +1,9 @@
+from mcf10amigration.cpm_initializations import initialize_cells_custom2
 import numpy as np
 import random
-from modular import hams
-from modular.cpm import CPM
-from modular.light import update_light
+from . import hams
+from .cpm import CPM
+from .light import update_light
 from tqdm import tqdm
 
 def monte_carlo_step(cpm: CPM):
@@ -102,6 +103,10 @@ def mc_sim(cpm, num_steps):
             (a bit trivial, since it's just 0, 1, 2, ..., num_steps, but corresponds to gillespie simulation output format)
 
     """    
+
+    # initialize
+
+    cpm.initialization(cpm)
     
     frames_for_plot = [cpm.grid.copy()] #initialize
     light_patterns = [cpm.light_pattern.copy()] #initialize

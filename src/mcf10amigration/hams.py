@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.ndimage import label, binary_fill_holes
 from skimage.measure import perimeter, perimeter_crofton, regionprops
-from modular.cpm import CPM
+from .cpm import CPM
 
 ###### HELPER FUNCTIONS ###### ==> FEATURES OF CELL
 
