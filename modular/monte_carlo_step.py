@@ -1,8 +1,8 @@
 import numpy as np
 import random
-from . import hams
-from .cpm import CPM
-from .light import update_light
+from modular import hams
+from modular.cpm import CPM
+from modular.light import update_light
 from tqdm import tqdm
 
 def monte_carlo_step(cpm: CPM):
