@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.ndimage import label, binary_fill_holes
-from skimage.measure import perimeter, perimeter_crofton, regionprops
+from skimage.measure import perimeter, perimeter_crofton, regionprops, regionprops_table
 from .cpm import CPM
 
 ###### HELPER FUNCTIONS ###### ==> FEATURES OF CELL
@@ -20,7 +20,7 @@ def _fraction_illuminated(cpm: CPM, cell_id):
     region = next((r for r in props if r.label == cell_id), None)
     
     if region is not None:
-        return region.mean_intensity
+        return region.intensity_mean
     else:
         return 0.0
     
@@ -86,26 +86,38 @@ def calculate_hamiltonian(cpm: CPM):
     hamiltonian = 0
     cell_ids = np.unique(cpm.grid)
     cell_ids = cell_ids[cell_ids != 0]
-        
-    for cell_id in cell_ids:
-        # deltaH_ground: check for disjoint parts
-        labeled_array, num_features = label(cpm.grid == cell_id) # intepreter misreading the type of self.grid, totally fine at runtime
-        if num_features > 1:
-            return np.inf  # positive infinity for disjoint parts
-            
-        #deltaH_ground: check for holes
-        if _cell_contains_holes(cpm, cell_id):
-            return np.inf
-            
-        # calc area & perimeter
-        area = np.sum(cpm.grid == cell_id)
-        perimeter = _calculate_perimeter(cpm, cell_id)
 
-        # Energy terms for area and perimeter/area ratio
-        hamiltonian += 10*np.power(np.abs(area - cpm.target_area), 2) # deltaH_area
-        hamiltonian += np.power(np.abs(perimeter-cpm.target_perimeter), 4) # deltaH_perimeter
-        #hamiltonian += 0.8*(np.abs(((area**(1/2)) / perimeter) - cpm.target_ratio)) # deltaH_area/perimeter_ratio
-        hamiltonian -= np.power(100*_fraction_illuminated(cpm, cell_id), 1.75) # no specific deltaH term as outlined in JP, but deltaH_lum for now
+    properties = ['area','perimeter_crofton','intensity_mean', 'euler_number']
+    props_table = regionprops_table(label_image=cpm.grid, intensity_image=cpm.light_pattern, properties=properties)
+
+    if np.sum((props_table['euler_number'] != 1) > 0):
+        return np.inf
+
+    hamiltonian += np.sum(10*np.power(np.abs(props_table['area'] - cpm.target_area), 2))
+    hamiltonian += np.sum(np.power(np.abs(props_table['perimeter_crofton']-cpm.target_perimeter), 4))
+    hamiltonian -= np.sum(np.power(100 * np.abs(props_table['intensity_mean']), 1.75))
+
+    return hamiltonian
+
+    #for cell_id in cell_ids:
+    #    # deltaH_ground: check for disjoint parts
+    #    labeled_array, num_features = label(cpm.grid == cell_id) # intepreter misreading the type of self.grid, totally fine at runtime
+    #    if num_features > 1:
+    #        return np.inf  # positive infinity for disjoint parts
+            
+    #    #deltaH_ground: check for holes
+    #    if _cell_contains_holes(cpm, cell_id):
+    #        return np.inf
+            
+    #    # calc area & perimeter
+    #    area = np.sum(cpm.grid == cell_id)
+    #    perimeter = _calculate_perimeter(cpm, cell_id)
+
+    #    # Energy terms for area and perimeter/area ratio
+    #    hamiltonian += 10*np.power(np.abs(area - cpm.target_area), 2) # deltaH_area
+    #    hamiltonian += np.power(np.abs(perimeter-cpm.target_perimeter), 4) # deltaH_perimeter
+    #    #hamiltonian += 0.8*(np.abs(((area**(1/2)) / perimeter) - cpm.target_ratio)) # deltaH_area/perimeter_ratio
+    #    hamiltonian -= np.power(100*_fraction_illuminated(cpm, cell_id), 1.75) # no specific deltaH term as outlined in JP, but deltaH_lum for now
         
         # print statements
         #print("Cell ID: ", cell_id)
