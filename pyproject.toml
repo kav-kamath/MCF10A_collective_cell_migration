@@ -22,3 +22,6 @@ mcf10a-collective-cell-migration = "mcf10a_collective_cell_migration:main"
 [build-system]
 requires = ["uv_build>=0.9.6,<0.10.0"]
 build-backend = "uv_build"
+
+[tool.setuptools.packages.find]
+where = ["src"]
