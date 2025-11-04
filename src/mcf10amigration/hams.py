@@ -123,8 +123,7 @@ def calculate_hamiltonian(cpm: CPM):
         #print("Cell ID: ", cell_id)
         #print("area delta: ", (area - cpm.target_area))
         #print("perimeter, perimeter delta: ", perimeter, (perimeter - cpm.target_perimeter))
-        
 
-    return hamiltonian
+    #return hamiltonian
 
     

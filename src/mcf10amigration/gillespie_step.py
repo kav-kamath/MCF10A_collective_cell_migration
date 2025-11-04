@@ -3,6 +3,8 @@ import numpy as np
 from . import hams
 from .cpm import CPM
 from .light import update_light
+from tqdm.notebook import tqdm
+from IPython.display import display
 
 def gillespie_step(cpm: CPM):
     """
@@ -38,6 +40,7 @@ def gillespie_step(cpm: CPM):
                         # rate: exp(-deltaH/T) if deltaH > 0, else 1
                         if not np.isnan(deltaH):
                             rate = np.exp(-deltaH / cpm.temperature) #1.0
+                            print("deltaH calc-ed")
                         else:
                             print("deltaH is nan")
                         events.append(((i_x, i_y), (j_x, j_y)))
@@ -99,16 +102,27 @@ def gillespie_sim(cpm: CPM, max_time):
             (arbitrary time units / units contrived from model)
     """
     
+    #initializations
     frames_for_plot = [cpm.grid.copy()]
     light_patterns = [cpm.light_pattern.copy()]
     event_times = [cpm.gill_time]
     
+    pbar = tqdm(total=max_time, desc="Gillespie Simulation", dynamic_ncols=True, unit_scale=True)
+    display(pbar)
+    # run sim
     while cpm.gill_time < max_time:
         prev_time = cpm.gill_time
+        
         gillespie_step(cpm)
         event_times.append(cpm.gill_time)
         #print(f"Time: {cpm.gill_time}")
+        
         frames_for_plot.append(cpm.grid.copy())
         light_patterns.append(cpm.light_pattern.copy())
+        
+        delta = cpm.gill_time - prev_time
+        if delta > 0:
+            pbar.update(delta)
+    pbar.close()
 
     return frames_for_plot, light_patterns, event_times
