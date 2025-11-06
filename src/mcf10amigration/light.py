@@ -27,6 +27,12 @@ def shrinking_circle_light(y, x, t):
     radius = 40 - 0.2*t
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
+def one_expanding_circle_light(y, x, t):
+    center = 10
+    inner_radius = 0 + 0.2*t
+    outer_radius = 2 + 0.3*t
+    return (((y - center)**2 + (x - center)**2) >= inner_radius**2) & (((y - center)**2 + (x - center)**2) <= outer_radius**2)
+
 def moving_bar_light(y, x , t):
     width = 3 # number of pixels
     speed = 1 #some scaler with respect to time
@@ -53,16 +59,15 @@ def multiple_moving_bars_light(y, x , t):
     light_mask = np.zeros(y.shape, dtype=bool)
     
     for i in range(num_bars):
-        top = int((t*speed + i*spatial_period) % y.shape[0])
-        bottom = int(top + width)
+        top = int((t*speed + i*spatial_period) % y.shape[0]) # start taking remainder once top > size of grid -> creates wrap around
+        bottom = int((top + width) % y.shape[0])
     
-        if bottom < top: # wrap around
+        if bottom < top: # specific case when wrapping around when top is at bottom of grid & bottom is at top
             light_mask |= (y >= top) | (y <= bottom)
         else: # normal case
             light_mask |= (y >= top) & (y <= bottom)
     
     return light_mask
-
 
 # LIGHTING UPDATING FUNCTION
 
