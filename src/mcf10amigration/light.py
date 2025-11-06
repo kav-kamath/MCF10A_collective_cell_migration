@@ -24,7 +24,7 @@ def light_spreading_from_corner(y, x, t):
 
 def shrinking_circle_light(y, x, t):
     center = 50
-    radius = 40 - 0.05*t
+    radius = 40 - 0.4*t
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
 def moving_bar_light(y, x , t):
