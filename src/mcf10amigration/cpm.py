@@ -57,6 +57,6 @@ class CPM:
         #else:
         #    raise ValueError(f"Invalid initialization method: {initialization}")
 
-        existing_cell_ids = np.unique(self.grid)
-        existing_cell_ids = existing_cell_ids[existing_cell_ids != 0]
-        self.num_cells = len(existing_cell_ids)
+        #existing_cell_ids = np.unique(self.grid)
+        #existing_cell_ids = existing_cell_ids[existing_cell_ids != 0]
+        #self.num_cells = len(existing_cell_ids)
