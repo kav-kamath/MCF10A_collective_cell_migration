@@ -29,9 +29,15 @@ def shrinking_circle_light(y, x, t):
 
 def one_expanding_circle_light(y, x, t):
     center = 10
-    inner_radius = 0 + 0.2*t
-    outer_radius = 2 + 0.3*t
+    inner_radius = ((0 + 3*t) % y.shape[0]/2)
+    outer_radius = ((4 + 3*t) % y.shape[0]/2)
+    
+    #if inner_radius > outer_radius : # specific case when wrapping around when inside is edge of grid and outside is at center
+        #return (((y - center)**2 + (x - center)**2) <= inner_radius**2) & (((y - center)**2 + (x - center)**2) >= outer_radius**2)
+    #else: # normal case
     return (((y - center)**2 + (x - center)**2) >= inner_radius**2) & (((y - center)**2 + (x - center)**2) <= outer_radius**2)
+    
+    #return (((y - center)**2 + (x - center)**2) >= inner_radius**2) & (((y - center)**2 + (x - center)**2) <= outer_radius**2)
 
 def moving_bar_light(y, x , t):
     width = 3 # number of pixels
