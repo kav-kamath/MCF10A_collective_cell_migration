@@ -45,7 +45,7 @@ def gillespie_step(cpm: CPM):
                             print("deltaH is nan")
                         events.append(((i_x, i_y), (j_x, j_y)))
                         rates.append(rate)
-                        
+    
     # cell empty evenst
     for y in range(cpm.grid_size):
         for x in range(cpm.grid_size):
@@ -62,12 +62,11 @@ def gillespie_step(cpm: CPM):
                                     
     total_rate = np.sum(rates)
     if total_rate < 1e-12:  # event veryyyy unlikely (make it total_rate==0 causing NAN error)
+        print("minimal total rate")
         return  # no possible events
 
     #print(events)
     #print(rates)
-    #print(total_rate)
-    
     
     # proportionally choose which event occurs  
     chosen_index = np.random.choice(len(events), p=np.array(rates)/total_rate)
@@ -107,8 +106,8 @@ def gillespie_sim(cpm: CPM, max_time):
     light_patterns = [cpm.light_pattern.copy()]
     event_times = [cpm.gill_time]
     
-    pbar = tqdm(total=max_time, desc="Gillespie Simulation", dynamic_ncols=True, unit_scale=True)
-    display(pbar)
+    progress_bar = tqdm(total=max_time, desc="Gillespie Simulation", unit_scale=True)
+    display(progress_bar)
     # run sim
     while cpm.gill_time < max_time:
         prev_time = cpm.gill_time
@@ -120,9 +119,9 @@ def gillespie_sim(cpm: CPM, max_time):
         frames_for_plot.append(cpm.grid.copy())
         light_patterns.append(cpm.light_pattern.copy())
         
-        delta = cpm.gill_time - prev_time
-        if delta > 0:
-            pbar.update(delta)
-    pbar.close()
+        tc = cpm.gill_time - prev_time
+        if tc > 0:
+            progress_bar.update(tc)
+    progress_bar.close()
 
     return frames_for_plot, light_patterns, event_times
