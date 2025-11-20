@@ -4,8 +4,8 @@ from .cpm import CPM
 # STATIC LIGHT PATTERN FUNCTIONS
 
 def static_circle_light(y, x, t):
-    center = 10
-    radius = 7.5
+    center = 17
+    radius = 13
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
 def static_left_half_light(y, x, t):
@@ -40,8 +40,8 @@ def one_expanding_circle_light(y, x, t):
     #return (((y - center)**2 + (x - center)**2) >= inner_radius**2) & (((y - center)**2 + (x - center)**2) <= outer_radius**2)
 
 def moving_bar_light(y, x , t):
-    width = 3 # number of pixels
-    speed = 1 #some scaler with respect to time
+    width = 7 # number of pixels
+    speed = 0.2 #some scaler with respect to time
 
     top = int(t * speed)
     bottom = int(top + width)

@@ -125,7 +125,7 @@ def initialize_cells_voronoi(cpm: CPM):
         None (Updates the CPM grid.)
     """
 
-    center_method = "uniform"
+    center_method = "random"
 
     if center_method == "uniform": # Generate cell centers with uniform spacing
         # Calculate spacing for uniform distribution
@@ -145,7 +145,7 @@ def initialize_cells_voronoi(cpm: CPM):
                 cell_centers.append((y, x))
                 cell_id += 1
                 if cell_id > cpm.num_cells:
-                    break  # Stop if we've reached the desired number of cells
+                    break  # stop if reached the desired number of cells
             if cell_id > cpm.num_cells:
                 break
 
