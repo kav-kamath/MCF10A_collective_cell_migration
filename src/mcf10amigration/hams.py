@@ -94,7 +94,14 @@ def calculate_hamiltonian(cpm: CPM):
     properties = ['area','perimeter_crofton','intensity_mean', 'euler_number']
     props_table = regionprops_table(label_image=cpm.grid, intensity_image=cpm.light_pattern, properties=properties)
 
-    if np.sum((props_table['euler_number'] != 1) > 0):
+    # check for no holes
+    if np.any(props_table['euler_number'] != 1):
+        return np.inf
+    # check for no splits
+    for cell_id in cell_ids:
+        mask = (cpm.grid == cell_id)
+        labeled_mask, num_pieces = label(mask)
+    if num_pieces > 1:
         return np.inf
 
     hamiltonian += np.sum(10*np.power(np.abs(props_table['area'] - cpm.target_area), 2))
