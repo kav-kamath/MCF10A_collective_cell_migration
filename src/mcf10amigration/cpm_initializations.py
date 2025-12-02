@@ -16,7 +16,7 @@ def initialize_cells_random(cpm: CPM): #choose cell centers randomly
     Each cell is initially placed as an approximately circular cluster of pixels, but cells may overwrite previously placed cells they overlap with.  
 
     Parameters:
-        self : CPM
+        cpm : CPM
     Returns:
         None (Updates the CPM grid and updates the number of cells in case it changed.)
     """
@@ -63,7 +63,7 @@ def initialize_cells_ideal(cpm: CPM): #choose cell centers such as to uniformly 
     Initialize cells to be non-overlapping and uniformly spaced across the grid, with grid filled (whitespace allowed).
 
     Parameters:
-        self : CPM
+        cpm : CPM
     Returns:
         None (Updates the CPM grid.)
     """
@@ -90,7 +90,7 @@ def initialize_cells_space_filling(cpm: CPM):
 
 
     Parameters:
-        self : CPM
+        cpm : CPM
     Returns:
         None (Updates the CPM grid.)
     """
@@ -120,7 +120,7 @@ def initialize_cells_voronoi(cpm: CPM):
     Cell centers are chosen either uniformly or randomly (currently hardcoded). Each pixel is assigned to the closest cell center.
 
     Parameters:
-        self : CPM
+        cpm : CPM
     Returns:
         None (Updates the CPM grid.)
     """
@@ -167,6 +167,58 @@ def initialize_cells_voronoi(cpm: CPM):
                     min_dist = dist
                     closest_cell_id = cell_id
             cpm.grid[y, x] = closest_cell_id
+
+
+def initialize_cells_tissue_sparse(cpm: CPM):
+    """
+    Initialize cells by placing initializing with ideal logic (see above), but reducing grid space for cells by margin amount.
+
+    Parameters:
+        cpm : CPM
+        margin : int or None, specified margin space
+        tissue_size : int or None, pecified tissue size
+    Returns:
+        None (Updates the CPM grid.)
+    """
+    
+    N = cpm.grid_size
+    margin = cpm.margin
+    tissue_size = cpm.tissue_size
+    
+    # checks
+    if (margin is None and tissue_size is None) or (margin is not None and tissue_size is not None):
+        raise ValueError("specify exactly ONE of: margin OR tissue_size in CPM object")
+
+    # margin given, compute tissue_size
+    if margin is not None:
+        assert (2*margin < N), "margin too large, no space left for tissue, margin must be < (N/2)"
+        tissue_size = N - 2 * margin
+
+    elif tissue_size is not None:
+        assert 0 < tissue_size <= N, "tissue_size incompatible. 0 < tissue_size <= N"
+        margin = (N - tissue_size) // 2
+        assert tissue_size + (2*margin) == N, (
+            "error: tissue_size + 2*margin =/= grid_size"
+        )
+    
+    # for type-checker
+    assert margin is not None
+    assert tissue_size is not None
+
+    # fill in grid        
+    cell_id = 1
+    for y in range(3+margin, cpm.grid_size - 3 - margin, 7):
+        for x in range(3+margin, cpm.grid_size - 3 - margin, 7):
+            # main sqaure
+            cpm.grid[y-2:y+3, x-2:x+3] = cell_id #[unclusive, exclusive]
+            #sides
+            cpm.grid[y-1:y+2, x-3] = cell_id # left
+            cpm.grid[y-3, x-1:x+2] = cell_id # top
+            cpm.grid[y-1:y+2, x+3] = cell_id # right
+            cpm.grid[y+3, x-1:x+2] = cell_id # bottom
+
+            cell_id += 1
+
 
 ## CUSTOM (customize cell centers) ##
 def initialize_cells_custom1(cpm: CPM, cell_centers: list[tuple[int, int]]):        
@@ -252,6 +304,7 @@ init_methods = {
     "ideal": initialize_cells_ideal,
     "space_filling": initialize_cells_space_filling,
     "voronoi": initialize_cells_voronoi,
+    "tissue_sparse": initialize_cells_tissue_sparse,
     "custom1": initialize_cells_custom1,
     "custom2": initialize_cells_custom2
 }

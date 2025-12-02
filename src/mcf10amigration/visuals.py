@@ -125,6 +125,34 @@ def animate_simulation(frames, times, background_color=(1, 1, 1), save_boolean=T
     plt.close(fig)
     #return HTML(ani.to_jshtml())
 
+def plot_one_frame(frame, title = None):
+    """
+    Display only the first CPM simulation frame.
+
+    Parameters
+        frames : list of np.ndarray - list of grid states at each time point
+        cmap : matplotlib.colors.Colormap - colormap for display
+
+    Returns:
+        None (Displays a static 2x2 figure of plots of the first four frames.)
+    """
+    
+    num_colors = np.max([np.max(frame) for frame in frame])    # old color method (doesn't allow for change # of cells): num_colors = np.max(cpm.grid)
+    random_colors = np.random.rand(num_colors + 1, 3) # random rbg values
+    random_colors[0, :] = (1, 1, 1) # set background color to white
+
+    cmap = ListedColormap(random_colors)
+    
+    fig, ax = plt.subplots()
+    image = ax.imshow(frame, cmap=cmap, interpolation='nearest')
+    
+    if title is not None:
+        ax.set_title(title)
+
+    ax.set_aspect("equal")
+    plt.tight_layout()
+    plt.show()
+
 
 def plot_2x2(frames, cmap):
     """
