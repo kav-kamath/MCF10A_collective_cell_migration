@@ -168,7 +168,6 @@ def initialize_cells_voronoi(cpm: CPM):
                     closest_cell_id = cell_id
             cpm.grid[y, x] = closest_cell_id
 
-
 def initialize_cells_tissue_sparse(cpm: CPM):
     """
     Initialize cells by placing initializing with ideal logic (see above), but reducing grid space for cells by margin amount.
@@ -218,6 +217,73 @@ def initialize_cells_tissue_sparse(cpm: CPM):
             cpm.grid[y+3, x-1:x+2] = cell_id # bottom
 
             cell_id += 1
+
+
+def initialize_cells_tissue_dense(cpm: CPM):
+    """
+    Initialize cells by placing initializing with ideal logic (see above), but reducing grid space for cells by margin amount.
+
+    Parameters:
+        cpm : CPM
+        margin : int or None, specified margin space
+        tissue_size : int or None, pecified tissue size
+    Returns:
+        None (Updates the CPM grid.)
+    """
+    
+    N = cpm.grid_size
+    margin = cpm.margin
+    tissue_size = cpm.tissue_size
+    
+    # checks
+    if (margin is None and tissue_size is None) or (margin is not None and tissue_size is not None):
+        raise ValueError("specify exactly ONE of: margin OR tissue_size in CPM object")
+
+    # margin given, compute tissue_size
+    if margin is not None:
+        assert (2*margin < N), "margin too large, no space left for tissue, margin must be < (N/2)"
+        tissue_size = N - 2 * margin
+
+    elif tissue_size is not None:
+        assert 0 < tissue_size <= N, "tissue_size incompatible. 0 < tissue_size <= N"
+        margin = (N - tissue_size) // 2
+        assert tissue_size + (2*margin) == N, (
+            "error: tissue_size + 2*margin =/= grid_size"
+        )
+    
+    # for type-checker
+    assert margin is not None
+    assert tissue_size is not None
+
+    # fill in small grid        
+    cell_id = 1
+    for y in range(3+margin, N - 3 - margin, 7):
+        for x in range(3+margin, N - 3 - margin, 7):
+            # main sqaure
+            cpm.grid[y-2:y+3, x-2:x+3] = cell_id #[unclusive, exclusive]
+            #sides
+            cpm.grid[y-1:y+2, x-3] = cell_id # left
+            cpm.grid[y-3, x-1:x+2] = cell_id # top
+            cpm.grid[y-1:y+2, x+3] = cell_id # right
+            cpm.grid[y+3, x-1:x+2] = cell_id # bottom
+
+            cell_id += 1
+            
+    # fill in empty space in small grid
+    # iterate through all spaces in small grid, looking for empty ones
+    while 0 in cpm.grid[margin:N-margin, margin:N-margin]:
+        for y in range(margin, N-margin):
+            for x in range(margin, N-margin):
+                #if empty
+                if cpm.grid[y, x] == 0:
+                    new_cell_id = [0] # start empty list
+                    for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]: #look at IDs of all neighbors
+                        nx, ny = (x + dx) , (y + dy)
+                        if 0 <= nx < cpm.grid_size and 0 <= ny < cpm.grid_size: #if neighbor has valid indices
+                                if cpm.grid[ny, nx] != 0:
+                                    new_cell_id.append(cpm.grid[ny, nx])
+                    random_id = random.choice(new_cell_id) #choose new ID randomly
+                    cpm.grid[y, x] = random_id
 
 
 ## CUSTOM (customize cell centers) ##
@@ -305,6 +371,7 @@ init_methods = {
     "space_filling": initialize_cells_space_filling,
     "voronoi": initialize_cells_voronoi,
     "tissue_sparse": initialize_cells_tissue_sparse,
+    "tissue_dense": initialize_cells_tissue_dense,
     "custom1": initialize_cells_custom1,
     "custom2": initialize_cells_custom2
 }
