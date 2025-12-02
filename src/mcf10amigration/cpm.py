@@ -29,17 +29,20 @@ class CPM:
         None (Initializes the CPM grid and parameters.)
     """
 
-    def __init__(self, grid_size, num_cells, target_area, target_perimeter, target_ratio, temperature, initialization, light_function, light_pattern=None):
+    def __init__(self, grid_size, num_cells, target_area, target_perimeter, k, temperature, initialization, light_function, light_pattern=None, tissue_size = None, margin = None):
         self.grid_size = grid_size
         self.num_cells = num_cells
         self.target_area = target_area
         self.target_perimeter = target_perimeter
-        self.target_ratio = target_ratio
+        # self.target_ratio = target_ratio
+        self.k = k
         self.temperature = temperature
         self.grid = np.zeros((grid_size, grid_size), dtype=int)
         self.mc_step = 0
         self.gill_time = 0.0
         self.light_function = light_function
+        self.tissue_size = tissue_size
+        self.margin = margin
         
         # initialize light pattern
         if light_pattern is not None:
