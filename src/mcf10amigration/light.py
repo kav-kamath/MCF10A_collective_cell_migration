@@ -9,10 +9,10 @@ def static_circle_light(y, x, t):
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
 def static_left_half_light(y, x, t):
-    return x <= 10
+    return x <= 17
 
 def static_right_half_light(y, x, t):
-    return x > 10
+    return x > 17
 
 def no_light (y, x, t):
     return x*0
@@ -20,17 +20,44 @@ def no_light (y, x, t):
 # DYNAMIC LIGHT PATTERN FUNCTIONS
 
 def light_spreading_from_corner(y, x, t):
-    return ((y+x) <= 0.2*t)
+    return ((y+x) <= t)
 
 def shrinking_circle_light(y, x, t):
-    center = 50
-    radius = 40 - 0.2*t
+    center = 17
+    radius = 15 - 0.75*t
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
-def one_expanding_circle_light(y, x, t):
-    center = 10
-    inner_radius = ((0 + 3*t) % y.shape[0]/2)
-    outer_radius = ((4 + 3*t) % y.shape[0]/2)
+def growing_circle_light(y, x, t):
+    center = 17
+    radius = 0 + 0.75*t
+    return ((y - center)**2 + (x - center)**2) <= radius**2
+
+def outward_circle_wave_light(y, x, t):
+    
+    # change these values
+    center = 17
+    initial_inner_radius = 0
+    initial_outer_radius = 4
+    
+    # DO NOT CHANGE BELOW
+    
+    inner_radius = ((initial_inner_radius + 2*t) % y.shape[0]/2)
+    outer_radius = ((initial_outer_radius + 2*t) % y.shape[0]/2)
+    
+    #if inner_radius > outer_radius : # specific case when wrapping around when inside is edge of grid and outside is at center
+        #return (((y - center)**2 + (x - center)**2) <= inner_radius**2) & (((y - center)**2 + (x - center)**2) >= outer_radius**2)
+    #else: # normal case
+    return (((y - center)**2 + (x - center)**2) >= inner_radius**2) & (((y - center)**2 + (x - center)**2) <= outer_radius**2)
+    
+    #return (((y - center)**2 + (x - center)**2) >= inner_radius**2) & (((y - center)**2 + (x - center)**2) <= outer_radius**2)
+
+def inward_circle_wave_light(y, x, t):
+    center = 17
+    initial_inner_radius = 31
+    initial_outer_radius = 35
+    
+    inner_radius = ((initial_inner_radius - 2*t) % y.shape[0]/2)
+    outer_radius = ((initial_outer_radius - 2*t) % y.shape[0]/2)
     
     #if inner_radius > outer_radius : # specific case when wrapping around when inside is edge of grid and outside is at center
         #return (((y - center)**2 + (x - center)**2) <= inner_radius**2) & (((y - center)**2 + (x - center)**2) >= outer_radius**2)
