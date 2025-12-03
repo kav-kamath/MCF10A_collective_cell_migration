@@ -44,6 +44,8 @@ class CPM:
         self.tissue_size = tissue_size
         self.margin = margin
         
+        assert (temperature>0), "t should be > 0"
+        
         # initialize light pattern
         if light_pattern is not None:
             light_pattern = np.array(light_pattern, dtype=int) # make a numpy array, necessary for masking later on
