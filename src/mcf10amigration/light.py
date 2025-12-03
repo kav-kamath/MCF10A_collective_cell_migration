@@ -4,8 +4,8 @@ from .cpm import CPM
 # STATIC LIGHT PATTERN FUNCTIONS
 
 def static_circle_light(y, x, t):
-    center = 17
-    radius = 10
+    center = 35
+    radius = 17
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
 def static_left_half_light(y, x, t):
