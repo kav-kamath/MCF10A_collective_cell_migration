@@ -5,7 +5,7 @@ from .cpm import CPM
 
 def static_circle_light(y, x, t):
     center = 17
-    radius = 13
+    radius = 10
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
 def static_left_half_light(y, x, t):
@@ -67,13 +67,16 @@ def inward_circle_wave_light(y, x, t):
     #return (((y - center)**2 + (x - center)**2) >= inner_radius**2) & (((y - center)**2 + (x - center)**2) <= outer_radius**2)
 
 def moving_bar_light(y, x , t):
-    width = 7 # number of pixels
-    speed = 0.2 #some scaler with respect to time
+    width = 4 # number of pixels
+    speed = 2 #some scaler with respect to time
 
-    top = int(t * speed)
-    bottom = int(top + width)
+    top = (int(t * speed)) % y.shape[0]
+    bottom = (top + width) % y.shape[0]
 
-    return (y >= top) & (y <= bottom)
+    if top < bottom:
+        return (y >= top) & (y <= bottom)
+    else: # wrap around (bottom < top)
+        return (y >= top) | (y <= bottom)
 
 def multiple_moving_bars_light(y, x , t):
     
@@ -82,11 +85,11 @@ def multiple_moving_bars_light(y, x , t):
     #distance_between_bars = 2
     #speed = 1 #some scaler with respect to time
 
-    spatial_period = 10                              # width + distance_between_bars
-    duty_cycle = 0.3                                # width / spatial_period (fraction of period that is lit up)
+    spatial_period = 14                              # width + distance_between_bars
+    duty_cycle = 0.28                                # width / spatial_period (fraction of period that is lit up)
     width = spatial_period * duty_cycle
     num_bars = int(y.shape[0] / spatial_period)
-    speed = 0.25
+    speed = 1
     
     # mask for y true(1)/false(0)
     light_mask = np.zeros(y.shape, dtype=bool)
