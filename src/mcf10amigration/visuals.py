@@ -120,7 +120,7 @@ def animate_simulation(frames, times, background_color=(1, 1, 1), save_boolean=T
     ani = FuncAnimation(fig, update, frames=len(frames), interval=100, blit=True)
 
     if save_boolean:
-        ani.save(output_filename, writer=animation.FFMpegWriter(fps=5))
+        ani.save(output_filename, writer=animation.FFMpegWriter(fps=10))
 
     plt.close(fig)
     #return HTML(ani.to_jshtml())
