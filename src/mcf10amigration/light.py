@@ -4,7 +4,7 @@ from .cpm import CPM
 # STATIC LIGHT PATTERN FUNCTIONS
 
 def static_circle_light(y, x, t):
-    center = 35
+    center = 37
     radius = 17
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
