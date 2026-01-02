@@ -178,7 +178,7 @@ def plot_2x2(frames, cmap):
     plt.show()
 
 
-def plot_5x5(frames, cmap):
+def plot_5x5(frames, cmap = None):
     """
     Display a 5x5 grid of the first 25 CPM simulation frames.
 
@@ -190,13 +190,22 @@ def plot_5x5(frames, cmap):
         None (Displays a static 5x5 figure of plots of the first 25 frames.)
     """
     
+    # custom colormap
+    if cmap is None:
+        background_color=(1, 1, 1)
+        num_colors = np.max([np.max(frame) for frame in frames])    # old color method (doesn't allow for change # of cells): num_colors = np.max(cpm.grid)
+        random_colors = np.random.rand(num_colors + 1, 3) # random rbg values
+        random_colors[0, :] = background_color  # set background color to white
+        cmap = ListedColormap(random_colors)
+    
+    
     # Create a 5x5 plot of the first 16 frames
     fig, axes = plt.subplots(4, 4, figsize=(20, 20))
     axes = axes.flatten()
 
     for i in range(16):
         axes[i].imshow(frames[i], cmap=cmap, interpolation='nearest')
-        axes[i].set_title(f"Frame {i + 1}")
+        axes[i].set_title(f"Time: {i}")
 
     plt.tight_layout()
     plt.show()
