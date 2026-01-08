@@ -46,7 +46,7 @@ def plot_static_light_pattern(cpm, save_boolean=False, output_filename="static_l
     plt.show()
 
 
-def visualize_dynamic_light_pattern(light_patterns, times, background_color=(1, 1, 1), save_boolean=True, output_filename="dynamic_light_pattern.mp4"):
+def visualize_dynamic_light_pattern(light_patterns, times, background_color=(1, 1, 1), save_boolean=True, output_filename="dynamic_light_pattern.mp4", fps=5):
     
     """
     Create (and optionally save to file) animation of dynamic light pattern over the course of a simulation.
@@ -60,6 +60,7 @@ def visualize_dynamic_light_pattern(light_patterns, times, background_color=(1, 
             Default is True.
         output_filename : str, optional - Name of the file to save the animation to.
             Default is "dynamic_light_pattern.mp4".
+        fps : int, optional - frames per second of saved animation 
             
     Returns
         None (Creates and optionally saves the animation to file. Does not display it.)
@@ -79,12 +80,12 @@ def visualize_dynamic_light_pattern(light_patterns, times, background_color=(1, 
     ani = FuncAnimation(fig, update, frames=len(light_patterns), interval=100, blit=True)
 
     if save_boolean:
-        ani.save(output_filename, writer=animation.FFMpegWriter(fps=5))
+        ani.save(output_filename, writer=animation.FFMpegWriter(fps=fps))
 
     plt.close(fig)
     #return HTML(ani.to_jshtml())
 
-def animate_simulation(frames, times, background_color=(1, 1, 1), save_boolean=True, output_filename="current_simulation.mp4"):
+def animate_simulation(frames, times, background_color=(1, 1, 1), save_boolean=True, output_filename="current_simulation.mp4", fps=5):
     """
     Create (and optionally save to file) animation of CPM grid over the course of a simulation.
 
@@ -97,6 +98,7 @@ def animate_simulation(frames, times, background_color=(1, 1, 1), save_boolean=T
             Default is True.
         output_filename : str, optional - Name of the file to save the animation to.
             Default is "current_simulation.mp4".
+        fps : int, optional - frames per second of saved animation 
             
     Returns
         None (Creates and optionally saves the animation to file. Does not display it.)
@@ -120,7 +122,7 @@ def animate_simulation(frames, times, background_color=(1, 1, 1), save_boolean=T
     ani = FuncAnimation(fig, update, frames=len(frames), interval=100, blit=True)
 
     if save_boolean:
-        ani.save(output_filename, writer=animation.FFMpegWriter(fps=10))
+        ani.save(output_filename, writer=animation.FFMpegWriter(fps=fps))
 
     plt.close(fig)
     #return HTML(ani.to_jshtml())
