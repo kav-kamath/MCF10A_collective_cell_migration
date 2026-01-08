@@ -5,6 +5,14 @@ from . import hams
 from .cpm import CPM
 from .light import update_light
 from tqdm import tqdm
+from dataclasses import dataclass
+
+@dataclass
+class SimulationResult:
+    metadata: dict
+    cell_states: list
+    light_patterns: list
+    event_times: list
 
 def monte_carlo_step(cpm: CPM):
     """
@@ -89,7 +97,7 @@ def monte_carlo_step(cpm: CPM):
     cpm.mc_step += 1 #increment time by 1 every time one full monte carlo step is complete (all N events have been attempted)
     """
         
-def mc_sim(cpm, num_steps):
+def mc_sim(cpm, num_steps) -> SimulationResult:
     """
     Run a Monte Carlo simulation on grid of a CPM object until specified number of steps is reached.
 
@@ -98,17 +106,30 @@ def mc_sim(cpm, num_steps):
         num_steps : float - number of Monte Carlo steps to simulate
 
     Returns
-        frames_for_plot : list of np.ndarray - list of grid (2D NumPy arrays) at/after each Monte Carlo event
-        event_times : list of int - list of each  Monte Carlo event step, 1:1 corresponds to frames_for_plot
-            (a bit trivial, since it's just 0, 1, 2, ..., num_steps, but corresponds to gillespie simulation output format)
-
+        SimulationResult data class with:
+            metadata : dict - of cpm input values
+            cell_states : list of np.ndarray - list of grid (2D NumPy arrays) at/after each Monte Carlo event
+            light_patterns: list of np.ndarray - list of light grid (2D NumPy arrays) at/after each Monte Carlo event
+            event_times: list of int - list of each  Monte Carlo event step, 1:1 corresponds to frames_for_plot
+                (a bit trivial, since it's just 0, 1, 2, ..., num_steps, but corresponds to gillespie simulation output format)
     """    
 
-    # initialize
+    metadata = {
+    "grid_size": cpm.grid_size,
+    "num_cells": cpm.num_cells,
+    "target_area": cpm.target_area,
+    "target_perimeter": cpm.target_perimeter,
+    "k": cpm.k,
+    "temperature": cpm.temperature,
+    "tissue_size": cpm.tissue_size,
+    "margin": cpm.margin,
+    "light_function": cpm.light_function
+    }
 
+    # initialize
     cpm.initialization(cpm)
     
-    frames_for_plot = [cpm.grid.copy()] #initialize
+    cell_states = [cpm.grid.copy()] #initialize
     light_patterns = [cpm.light_pattern.copy()] #initialize
     event_times = [cpm.mc_step] # initialize
     
@@ -118,7 +139,7 @@ def mc_sim(cpm, num_steps):
         monte_carlo_step(cpm)
         event_times.append(cpm.mc_step)
         #print(f"Time: {cpm.mc_step}")
-        frames_for_plot.append(cpm.grid.copy())
+        cell_states.append(cpm.grid.copy())
         light_patterns.append(cpm.light_pattern.copy())
-
-    return frames_for_plot, light_patterns, event_times
+    
+    return SimulationResult(metadata, cell_states, light_patterns, event_times)
