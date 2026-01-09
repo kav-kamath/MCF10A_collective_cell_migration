@@ -3,8 +3,8 @@ import numpy as np
 from scipy.ndimage import label, binary_fill_holes
 from skimage.measure import perimeter
 
-from mcf10amigration.cpm_initializations import *
-from mcf10amigration.light import *
+from mcf10amigration.cpm_initializations import initialize_cells_random
+from mcf10amigration.light import no_light
 
 
 # my files
