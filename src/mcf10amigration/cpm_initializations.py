@@ -56,7 +56,7 @@ def initialize_cells_random(cpm: CPM): #choose cell centers randomly
     """
 
 ## IDEAL ##
-def initialize_cells_ideal(cpm: CPM): #choose cell centers such as to uniformly place cells across space
+def initialize_cells_ideal(cpm: CPM): #choose cell centers such as to uniformly place cells across space    
     """
     Initialize cells to be non-overlapping and uniformly spaced across the grid, with grid filled (whitespace allowed).
 
@@ -83,6 +83,7 @@ def initialize_cells_ideal(cpm: CPM): #choose cell centers such as to uniformly 
 
 ## SPACE_FILLING ##            
 def initialize_cells_space_filling(cpm: CPM):
+    
     """
     Initialize cells to be non-overlapping and uniformly spaced across the grid, with grid filled (whitespace NOT allowed).
 
@@ -222,7 +223,7 @@ def initialize_cells_tissue_sparse(cpm: CPM):
     cpm.num_cells = cell_id - 1
 
 
-def initialize_cells_tissue_dense(cpm: CPM):
+def initialize_cells_tissue_dense(cpm: CPM): 
     """
     Initialize cells by placing initializing with ideal logic (see above), but reducing grid space for cells by margin amount.
 
@@ -383,6 +384,6 @@ init_methods = {
     "voronoi": initialize_cells_voronoi,
     "tissue_sparse": initialize_cells_tissue_sparse,
     "tissue_dense": initialize_cells_tissue_dense,
-    "custom1": initialize_cells_custom_centers,
-    "custom2": initialize_cells_custom_grid
+    "custom_centers": initialize_cells_custom_centers,
+    "custom_grid": initialize_cells_custom_grid
 }

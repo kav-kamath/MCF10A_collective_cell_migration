@@ -1,5 +1,5 @@
 import numpy as np
-from .cpm import CPM
+#from .cpm import CPM
 
 # STATIC LIGHT PATTERN FUNCTIONS
 
@@ -107,11 +107,28 @@ def multiple_moving_bars_light(y, x , t):
 
 # LIGHTING UPDATING FUNCTION
 
+light_methods = {
+    # Static light patterns
+    "static_circle": static_circle_light,
+    "static_left_half": static_left_half_light,
+    "static_right_half": static_right_half_light,
+    "no_light": no_light,
+
+    # Dynamic light patterns
+    "spreading_from_corner": light_spreading_from_corner,
+    "shrinking_circle": shrinking_circle_light,
+    "growing_circle": growing_circle_light,
+    "outward_circle_wave": outward_circle_wave_light,
+    "inward_circle_wave": inward_circle_wave_light,
+    "moving_bar": moving_bar_light,
+    "multiple_moving_bars": multiple_moving_bars_light,
+}
+
 def update_light(grid_size, light_function, time_step):
 
     x_s, y_s = np.meshgrid(np.arange(grid_size), np.arange(grid_size))  # create a grid of x,y coordinates
     
-    return (light_function(y_s, x_s, time_step)).astype(int)
+    return (light_methods[light_function](y_s, x_s, time_step)).astype(int)
     
     """
     light_pattern = np.zeros((grid_size, grid_size), dtype=int)

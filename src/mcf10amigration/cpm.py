@@ -3,14 +3,36 @@ import numpy as np
 from scipy.ndimage import label, binary_fill_holes
 from skimage.measure import perimeter
 
-from mcf10amigration.cpm_initializations import initialize_cells_random
-from mcf10amigration.light import no_light
-
 
 # my files
 #from .cpm_initializations import init_methods
 
 # full prelim CPM (Hamiltonian with deltaH_area & deltaH_perimeter & prelim deltaH_lum)
+
+allowed_light_functions = (
+    "static_circle",
+    "static_left_half",
+    "static_right_half",
+    "no_light",
+    "spreading_from_corner",
+    "shrinking_circle",
+    "growing_circle",
+    "outward_circle_wave",
+    "inward_circle_wave",
+    "moving_bar",
+    "multiple_moving_bars"
+)
+
+allowed_initializations = (
+    "random",
+    "ideal",
+    "space_filling",
+    "voronoi",
+    "tissue_sparse",
+    "tissue_dense",
+    "custom_centers",
+    "custom_grid"
+)
 
 class CPM:
     """
@@ -40,8 +62,8 @@ class CPM:
         target_area=37, 
         k=0, 
         temperature=1, 
-        initialization=initialize_cells_random, 
-        light_function=no_light, 
+        initialization="initialize_cells_random", 
+        light_function="no_light", 
         light_pattern=None, 
         tissue_size = None, 
         margin = None, 
@@ -49,22 +71,31 @@ class CPM:
         custom_grid = None
     ):
         
+        if initialization not in allowed_initializations:
+            raise ValueError(f"Invalid initialization function: {initialization}. Must be one of {allowed_initializations}")
+        assert initialization in allowed_initializations, f"invalid initialization function: {initialization}. must be one of {allowed_initializations}"
+
+        if light_function not in allowed_light_functions:
+            raise ValueError(f"Invalid light function: {light_function}. Must be one of {allowed_light_functions}")
+        assert light_function in allowed_light_functions, f"invalid light function: {light_function}. must be one of {allowed_light_functions}"
+        
+        assert (temperature>0), "t should be > 0 for cells attracted to light"
+        
         self.grid_size = grid_size
         self.num_cells = num_cells
         self.target_area = target_area
-        # self.target_ratio = target_ratio
         self.k = k
         self.temperature = temperature
         self.grid = np.zeros((grid_size, grid_size), dtype=int)
-        self.mc_step = 0
-        self.gill_time = 0.0
+        self.initialization = initialization
         self.light_function = light_function
         self.tissue_size = tissue_size
         self.margin = margin
         self.cell_centers = cell_centers
         self.custom_grid = custom_grid
         
-        assert (temperature>0), "t should be > 0"
+        self.mc_step = 0
+        self.gill_time = 0.0
         
         # initialize light pattern
         if light_pattern is not None:
@@ -75,7 +106,6 @@ class CPM:
         else:
             self.light_pattern = np.zeros((grid_size, grid_size), dtype=int)  # default: all dark
 
-        self.initialization = initialization
         #if initialization in init_methods:
             #init_methods[initialization](self)
         #    pass

@@ -6,6 +6,7 @@ from .light import update_light
 from tqdm import tqdm
 from dataclasses import dataclass
 import time
+from .cpm_initializations import *
 
 @dataclass
 class SimulationResult:
@@ -13,6 +14,17 @@ class SimulationResult:
     cell_states: list
     light_patterns: list
     event_times: list
+
+init_methods = {
+    "random": initialize_cells_random,
+    "ideal": initialize_cells_ideal,
+    "space_filling": initialize_cells_space_filling,
+    "voronoi": initialize_cells_voronoi,
+    "tissue_sparse": initialize_cells_tissue_sparse,
+    "tissue_dense": initialize_cells_tissue_dense,
+    "custom_centers": initialize_cells_custom_centers,
+    "custom_grid": initialize_cells_custom_grid
+}
 
 def monte_carlo_step(cpm: CPM):
     """
@@ -117,7 +129,9 @@ def mc_sim(cpm, num_steps) -> SimulationResult:
     start_time = time.time()
 
     # initialize
-    cpm.initialization(cpm)
+    if cpm.initialization not in init_methods:
+        raise ValueError(f"unknown initialization method: {cpm.initialization}")
+    init_methods[cpm.initialization](cpm)
     
     cell_states = [cpm.grid.copy()] #initialize
     light_patterns = [cpm.light_pattern.copy()] #initialize
@@ -139,7 +153,6 @@ def mc_sim(cpm, num_steps) -> SimulationResult:
     "grid_size": cpm.grid_size,
     "num_cells": cpm.num_cells,
     "target_area": cpm.target_area,
-    "target_perimeter": cpm.target_perimeter,
     "k": cpm.k,
     "temperature": cpm.temperature,
     "tissue_size": cpm.tissue_size,
