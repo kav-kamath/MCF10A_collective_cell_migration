@@ -33,11 +33,24 @@ class CPM:
         None (Initializes the CPM grid and parameters.)
     """
 
-    def __init__(self, grid_size=50, num_cells=1, target_area=37, target_perimeter=20.992, k=0, temperature=1, initialization=initialize_cells_random, light_function=no_light, light_pattern=None, tissue_size = None, margin = None):
+    def __init__(
+        self, 
+        grid_size=50, 
+        num_cells=1, 
+        target_area=37, 
+        k=0, 
+        temperature=1, 
+        initialization=initialize_cells_random, 
+        light_function=no_light, 
+        light_pattern=None, 
+        tissue_size = None, 
+        margin = None, 
+        cell_centers = None
+    ):
+        
         self.grid_size = grid_size
         self.num_cells = num_cells
         self.target_area = target_area
-        self.target_perimeter = target_perimeter
         # self.target_ratio = target_ratio
         self.k = k
         self.temperature = temperature
@@ -47,6 +60,7 @@ class CPM:
         self.light_function = light_function
         self.tissue_size = tissue_size
         self.margin = margin
+        self.cell_centers = cell_centers
         
         assert (temperature>0), "t should be > 0"
         

@@ -36,9 +36,7 @@ def initialize_cells_random(cpm: CPM): #choose cell centers randomly
         cpm.grid[y+3, x-1:x+2] = cell_id # bottom
 
     #get new number of cells
-    existing_cell_ids = np.unique(cpm.grid)
-    existing_cell_ids = existing_cell_ids[existing_cell_ids != 0]
-    cpm.num_cells = len(existing_cell_ids)
+    cpm.num_cells = np.unique(cpm.grid).size - 1 #-1 to account for background id of 0
     
 
     # old implementation: always places centers on whitespace but can get stuck in while loop if no whitespace left
@@ -80,6 +78,8 @@ def initialize_cells_ideal(cpm: CPM): #choose cell centers such as to uniformly 
             cpm.grid[y+3, x-1:x+2] = cell_id # bottom
 
             cell_id += 1
+    
+    cpm.num_cells = cell_id - 1 #correct the number of cells from the default value to the actual number in the simulation
 
 ## SPACE_FILLING ##            
 def initialize_cells_space_filling(cpm: CPM):
@@ -111,6 +111,8 @@ def initialize_cells_space_filling(cpm: CPM):
                                     new_cell_id.append(cpm.grid[ny, nx])
                     random_id = random.choice(new_cell_id) #choose new ID randomly
                     cpm.grid[y, x] = random_id
+    
+    cpm.num_cells = (np.unique(cpm.grid).size - 1) # -1 to account for background id of 0
 
 ## VORONOI ##
 def initialize_cells_voronoi(cpm: CPM):
@@ -217,6 +219,7 @@ def initialize_cells_tissue_sparse(cpm: CPM):
             cpm.grid[y+3, x-1:x+2] = cell_id # bottom
 
             cell_id += 1
+    cpm.num_cells = cell_id - 1
 
 
 def initialize_cells_tissue_dense(cpm: CPM):
@@ -268,6 +271,7 @@ def initialize_cells_tissue_dense(cpm: CPM):
             cpm.grid[y+3, x-1:x+2] = cell_id # bottom
 
             cell_id += 1
+    cpm.num_cells = cell_id - 1
             
     # fill in empty space in small grid
     # iterate through all spaces in small grid, looking for empty ones
@@ -287,7 +291,7 @@ def initialize_cells_tissue_dense(cpm: CPM):
 
 
 ## CUSTOM (customize cell centers) ##
-def initialize_cells_custom1(cpm: CPM, cell_centers: list[tuple[int, int]]):        
+def initialize_cells_custom_centers(cpm: CPM):        
     """
     Initialize cells with specified cell centers. Later listed cells may overlap with and overwrite formerly listed cells.
 
@@ -296,39 +300,58 @@ def initialize_cells_custom1(cpm: CPM, cell_centers: list[tuple[int, int]]):
     Returns:
         None (Updates the CPM grid and num_cells in case it changed.)
     """
+
+    if cpm.cell_centers is None:
+        raise ValueError("please specify cell_centers")
+    assert cpm.cell_centers is not None
+
+    assert isinstance(cpm.cell_centers, list), "cell_centers argument must be a list"
+    for index, coordinate in enumerate(cpm.cell_centers, 1):
+        assert isinstance(coordinate, tuple), f"cell_center #{index} must be a tuple"
+        assert all(isinstance(x, int) for x in coordinate), f"cell_center #{index} must be a tuple of 2 ints"
     
-    assert len(cell_centers) == cpm.num_cells, (
-        f"{cpm.num_cells} cell centers expected, {len(cell_centers)} cell centers input"
-    )
-    for y, x in cell_centers:
+    for y, x in cpm.cell_centers:
         assert 0 <= y < cpm.grid_size and 0 <= x < cpm.grid_size, (
             f"Cell center {(y, x)} is out of bounds: must be within "
-            f"(4 ≤ y < {cpm.grid_size - 3}, 4 ≤ x < {cpm.grid_size - 3})"
+            f"(0 ≤ y < {cpm.grid_size}, 0 ≤ x < {cpm.grid_size})"
         )
     
-    cell_ids = range(1, cpm.num_cells + 1)
-    
-    # specify cell centers
-    cell_centers = [(1,1), (8,1), (1,8), (8,8)]
-    
     # repeatedly chosen, code should still work but num_cells value may be lower than highest cell ID
-    for cell_id, (y,x) in enumerate(cell_centers, 1):
-        # y, x = random.randint(3, self.grid_size - 4), random.randint(3, self.grid_size - 4)
+    for cell_id, (y,x) in enumerate(cpm.cell_centers, 1):
+        
+        # to account for cells that may be partially out of bounds
+        y_min = max(y-2, 0)
+        y_max = min(y+3, cpm.grid_size)
+        x_min = max(x-2, 0)
+        x_max = min(x+3, cpm.grid_size)
+        
         # main square
-        cpm.grid[y-2:y+3, x-2:x+3] = cell_id #[inclusive, exclusive)
+        cpm.grid[y_min:y_max, x_min:x_max] = cell_id #[inclusive, exclusive)
+        
         #sides
-        cpm.grid[y-1:y+2, x-3] = cell_id # left
-        cpm.grid[y-3, x-1:x+2] = cell_id # top
-        cpm.grid[y-1:y+2, x+3] = cell_id # right
-        cpm.grid[y+3, x-1:x+2] = cell_id # bottom
+        x_left = max(x-3, 0)
+        cpm.grid[max(y-1,0):min(y+2, cpm.grid_size), x_left] = cell_id
+        
+        x_right = min(x+3, cpm.grid_size-1)
+        cpm.grid[max(y-1,0):min(y+2, cpm.grid_size), x_right] = cell_id
+        
+        y_top = max(y-3, 0)
+        cpm.grid[y_top, max(x-1,0):min(x+2, cpm.grid_size)] = cell_id
+        
+        y_bottom = min(y+3, cpm.grid_size-1)
+        cpm.grid[y_bottom, max(x-1,0):min(x+2, cpm.grid_size)] = cell_id
+
+        #old, doesn't prevent wrapping:
+        #cpm.grid[y-1:y+2, x-3] = cell_id # left
+        #cpm.grid[y-1:y+2, x+3] = cell_id # right
+        #cpm.grid[y-3, x-1:x+2] = cell_id # top
+        #cpm.grid[y+3, x-1:x+2] = cell_id # bottom
 
     #get new number of cells
-    existing_cell_ids = np.unique(cpm.grid)
-    existing_cell_ids = existing_cell_ids[existing_cell_ids != 0]
-    cpm.num_cells = len(existing_cell_ids)
+    cpm.num_cells = np.unique(cpm.grid).size - 1
 
 ## CUSTOM (customize entire grid) ##
-def initialize_cells_custom2(cpm: CPM):
+def initialize_cells_custom_grid(cpm: CPM):
     """
     Initialize cells with hardcoded layout.
 
@@ -365,6 +388,8 @@ def initialize_cells_custom2(cpm: CPM):
     # can't directly assign self.grid (self.grid = np.array(custom_grid, dtype=int)) so need to overwrite matrix values instead
     cpm.grid[0:cpm.grid_size, 0:cpm.grid_size] = np.array(custom_grid, dtype=int)
     
+    cpm.num_cells = np.unique(cpm.grid).size - 1
+    
 init_methods = {
     "random": initialize_cells_random,
     "ideal": initialize_cells_ideal,
@@ -372,6 +397,6 @@ init_methods = {
     "voronoi": initialize_cells_voronoi,
     "tissue_sparse": initialize_cells_tissue_sparse,
     "tissue_dense": initialize_cells_tissue_dense,
-    "custom1": initialize_cells_custom1,
-    "custom2": initialize_cells_custom2
+    "custom1": initialize_cells_custom_centers,
+    "custom2": initialize_cells_custom_grid
 }
