@@ -1,3 +1,6 @@
+
+##### OUTDATED - STOPPED UPDATING TO MATCH W REST OF CPDE #####
+
 import numpy as np
 
 from . import hams
