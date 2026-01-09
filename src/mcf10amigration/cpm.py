@@ -3,6 +3,10 @@ import numpy as np
 from scipy.ndimage import label, binary_fill_holes
 from skimage.measure import perimeter
 
+from mcf10amigration.cpm_initializations import *
+from mcf10amigration.light import *
+
+
 # my files
 #from .cpm_initializations import init_methods
 
@@ -29,7 +33,7 @@ class CPM:
         None (Initializes the CPM grid and parameters.)
     """
 
-    def __init__(self, grid_size, num_cells, target_area, target_perimeter, k, temperature, initialization, light_function, light_pattern=None, tissue_size = None, margin = None):
+    def __init__(self, grid_size=50, num_cells=1, target_area=37, target_perimeter=20.992, k=0, temperature=1, initialization=initialize_cells_random, light_function=no_light, light_pattern=None, tissue_size = None, margin = None):
         self.grid_size = grid_size
         self.num_cells = num_cells
         self.target_area = target_area
