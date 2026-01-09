@@ -45,7 +45,8 @@ class CPM:
         light_pattern=None, 
         tissue_size = None, 
         margin = None, 
-        cell_centers = None
+        cell_centers = None,
+        custom_grid = None
     ):
         
         self.grid_size = grid_size
@@ -61,6 +62,7 @@ class CPM:
         self.tissue_size = tissue_size
         self.margin = margin
         self.cell_centers = cell_centers
+        self.custom_grid = custom_grid
         
         assert (temperature>0), "t should be > 0"
         
