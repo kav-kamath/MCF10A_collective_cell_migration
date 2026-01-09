@@ -1,4 +1,3 @@
-from mcf10amigration.cpm_initializations import initialize_cells_custom2
 import numpy as np
 import random
 from . import hams
