@@ -46,7 +46,7 @@ def plot_static_light_pattern(cpm, save_boolean=False, output_filename="static_l
     plt.show()
 
 
-def visualize_dynamic_light_pattern(light_patterns, times, background_color=(1, 1, 1), save_boolean=True, output_filename="dynamic_light_pattern.mp4", fps=5):
+def animate_light_pattern(light_patterns, times, background_color=(1, 1, 1), save_boolean=True, output_filename="dynamic_light_pattern.mp4", fps=5):
     
     """
     Create (and optionally save to file) animation of dynamic light pattern over the course of a simulation.
@@ -85,7 +85,7 @@ def visualize_dynamic_light_pattern(light_patterns, times, background_color=(1, 
     plt.close(fig)
     #return HTML(ani.to_jshtml())
 
-def animate_simulation(frames, times, background_color=(1, 1, 1), save_boolean=True, output_filename="current_simulation.mp4", fps=5):
+def animate_cell_simulation(frames, times, background_color=(1, 1, 1), save_boolean=True, output_filename="current_simulation.mp4", fps=5):
     """
     Create (and optionally save to file) animation of CPM grid over the course of a simulation.
 

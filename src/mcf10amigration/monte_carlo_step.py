@@ -6,6 +6,7 @@ from .cpm import CPM
 from .light import update_light
 from tqdm import tqdm
 from dataclasses import dataclass
+import time
 
 @dataclass
 class SimulationResult:
@@ -114,17 +115,7 @@ def mc_sim(cpm, num_steps) -> SimulationResult:
                 (a bit trivial, since it's just 0, 1, 2, ..., num_steps, but corresponds to gillespie simulation output format)
     """    
 
-    metadata = {
-    "grid_size": cpm.grid_size,
-    "num_cells": cpm.num_cells,
-    "target_area": cpm.target_area,
-    "target_perimeter": cpm.target_perimeter,
-    "k": cpm.k,
-    "temperature": cpm.temperature,
-    "tissue_size": cpm.tissue_size,
-    "margin": cpm.margin,
-    "light_function": cpm.light_function
-    }
+    start_time = time.time()
 
     # initialize
     cpm.initialization(cpm)
@@ -141,5 +132,21 @@ def mc_sim(cpm, num_steps) -> SimulationResult:
         #print(f"Time: {cpm.mc_step}")
         cell_states.append(cpm.grid.copy())
         light_patterns.append(cpm.light_pattern.copy())
+    
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    
+    metadata = {
+    "grid_size": cpm.grid_size,
+    "num_cells": cpm.num_cells,
+    "target_area": cpm.target_area,
+    "target_perimeter": cpm.target_perimeter,
+    "k": cpm.k,
+    "temperature": cpm.temperature,
+    "tissue_size": cpm.tissue_size,
+    "margin": cpm.margin,
+    "light_function": cpm.light_function,
+    "simulation_runtime" : elapsed_time,
+    }
     
     return SimulationResult(metadata, cell_states, light_patterns, event_times)
