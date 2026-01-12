@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 import matplotlib.animation as animation
 from matplotlib.animation import FuncAnimation
+from matplotlib.colors import ListedColormap, BoundaryNorm
 import ffmpeg
 from IPython.display import HTML
 
@@ -85,7 +86,9 @@ def animate_light_pattern(light_patterns, times, background_color=(1, 1, 1), sav
     plt.close(fig)
     #return HTML(ani.to_jshtml())
 
-def animate_cell_simulation(frames, times, background_color=(1, 1, 1), save_boolean=True, output_filename="current_simulation.mp4", fps=5):
+
+def animate_cell_simulation_old(frames, times, background_color=(1, 1, 1), save_boolean=True, output_filename="current_simulation.mp4", fps=5):
+    # doesn't account for changeing number of items (e.g. if there isn't any background in frame 0 but there is in frame 1 from cells shrinking)
     """
     Create (and optionally save to file) animation of CPM grid over the course of a simulation.
 
@@ -126,6 +129,46 @@ def animate_cell_simulation(frames, times, background_color=(1, 1, 1), save_bool
 
     plt.close(fig)
     #return HTML(ani.to_jshtml())
+
+def animate_cell_simulation(frames, times, background_color=(1, 1, 1), save_boolean=True, output_filename="current_simulation.mp4", fps=5):
+
+    # get all unique IDs across all frames
+    unique_ids = np.unique(np.concatenate([np.unique(f) for f in frames]))
+
+    # assign colors
+    colors_dict = {0: background_color}  # 0 is always white
+    unique_ids = unique_ids[unique_ids != 0]
+    for id in unique_ids:
+        colors_dict[id] = np.random.rand(3)  # random color for each non-zero ID
+
+    # create a colormap with colors in order of sorted IDs
+    sorted_ids = sorted(colors_dict.keys())
+    color_array = np.array([colors_dict[id] for id in sorted_ids])
+    cmap = ListedColormap(color_array)
+
+    # BoundaryNorm ensures each ID maps exactly to the correct color
+    boundaries = np.array(sorted_ids + [max(sorted_ids)+1]) - 0.5
+    norm = BoundaryNorm(boundaries, cmap.N)
+
+    # plot
+    fig, ax = plt.subplots()
+    image = ax.imshow(frames[0], cmap=cmap, norm=norm, interpolation='nearest')
+
+    def update(frame_idx):
+        image.set_array(frames[frame_idx])
+        ax.set_title(f"Time: {times[frame_idx]:.5f}")
+        return image,
+
+    ani = FuncAnimation(fig, update, frames=len(frames), interval=100, blit=True)
+
+    if save_boolean:
+        ani.save(output_filename, writer=animation.FFMpegWriter(fps=fps))
+
+    plt.close(fig)
+
+
+
+
 
 def plot_one_frame(frame, title = None):
     """

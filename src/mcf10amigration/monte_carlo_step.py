@@ -43,20 +43,26 @@ def monte_carlo_step(cpm: CPM):
 
     for n in range(cpm.grid_size**2):  # N random grid points
         i_x, i_y = random.randint(0, cpm.grid_size - 1), random.randint(0, cpm.grid_size - 1)
-        dx, dy = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
+        dx, dy = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1), (0,0)]) #(0,0) will be a proxy for i -> 0
         j_x, j_y = (i_x + dx), (i_y + dy)
 
         # if jx,jy is a valid grid point (no wrapping around)
         if not (0 <= j_x < cpm.grid_size) & (0 <= j_y < cpm.grid_size):
             continue
 
-        #if xi,xj and jx,jy have different cell IDs
-        if  not (cpm.grid[i_y, i_x] != cpm.grid[j_y, j_x]):
-            continue
-
-        # change j to i, calculate new hamiltonian
         old_j_value = cpm.grid[j_y, j_x]
-        cpm.grid[j_y, j_x] = cpm.grid[i_y, i_x]
+
+        # change j to 0
+        if ((j_x, j_y) == (i_x, i_y)):
+            cpm.grid[j_y, j_x] = 0 #remember, this is the same as cpm.grid[j_y, j_x] = 0
+        # change j to i
+        else:
+            #if xi,xj and jx,jy have different cell IDs
+            if not (cpm.grid[i_y, i_x] != cpm.grid[j_y, j_x]):
+                continue
+            cpm.grid[j_y, j_x] = cpm.grid[i_y, i_x]
+
+        # calculate new hamiltonian
         new_hamiltonian = hams.calculate_hamiltonian(cpm)
         #print("new: ", new_hamiltonian)
 
