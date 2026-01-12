@@ -5,5 +5,6 @@ from .gillespie_step import *
 from .visuals import *
 from .light import *
 from .hams import *
+from .simulation_analysis import *
 
 # ^^ change to be specific "public" functions
