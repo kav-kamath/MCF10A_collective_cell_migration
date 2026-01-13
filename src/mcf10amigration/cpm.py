@@ -60,8 +60,11 @@ class CPM:
         grid_size=50, 
         num_cells=1, 
         target_area=37, 
-        k=0, 
-        temperature=1, 
+        k=0, # light-responsiveness parameter
+        lambda_area = 1,
+        lambda_roundness = 1,
+        lambda_adhesion = 0,
+        temperature = 1,
         initialization="initialize_cells_random", 
         light_function="no_light", 
         light_pattern=None, 
@@ -86,6 +89,9 @@ class CPM:
         self.target_area = target_area
         self.k = k
         self.temperature = temperature
+        self.lambda_area = lambda_area
+        self.lambda_roundness = lambda_roundness
+        self.lambda_adhesion = lambda_adhesion
         self.grid = np.zeros((grid_size, grid_size), dtype=int)
         self.initialization = initialization
         self.light_function = light_function
