@@ -35,7 +35,7 @@ def growing_circle_light(y, x, t):
 def outward_circle_wave_light(y, x, t):
     
     # change these values
-    center = 17
+    center = 37
     initial_inner_radius = 0
     initial_outer_radius = 4
     
