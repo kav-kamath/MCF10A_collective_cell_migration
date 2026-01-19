@@ -2,7 +2,7 @@ import random
 import numpy as np
 from .cpm import CPM
 
-def radial_density(frame: np.ndarray, bin_width:int = 1):
+def radial_density(frame: np.ndarray, bin_width:int = 1, method:str = "cell_area"):
         
     l, w = frame.shape
     cy = l/2
@@ -21,14 +21,22 @@ def radial_density(frame: np.ndarray, bin_width:int = 1):
 
     for r0, r1 in zip(bin_edges[:-1], bin_edges[1:]):
         mask = (dist_array >= r0) & (dist_array < r1)
+        ring_area = mask.sum()
+        inside_ring = frame[mask]
 
-        labels_in_ring = frame[mask]
+        if method == "cell_count":
+            # count unique non-zero cell IDs
+            unique_cells = np.unique(inside_ring)
+            unique_cells = unique_cells[unique_cells != 0] # remove 0
+            return_val = len(unique_cells)/ring_area
+        elif method == "cell_area":
+            return_val = np.count_nonzero(inside_ring)/ring_area
+        elif method == "raw_count":
+            return_val = len(unique_cells)
+        else:
+            raise ValueError("method argument must be 'cell_count' 'cell_area' or 'raw_count'")
 
-        # count unique non-zero cell IDs
-        unique_cells = np.unique(labels_in_ring)
-        unique_cells = unique_cells[unique_cells != 0] # remove 0
-
-        density.append(len(unique_cells))
+        density.append(return_val)
         bin_centers.append((r0 + r1) / 2)
 
     return [bin_centers, bin_edges, density]
