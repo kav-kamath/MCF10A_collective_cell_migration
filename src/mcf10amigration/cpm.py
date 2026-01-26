@@ -67,6 +67,7 @@ class CPM:
         temperature = 1,
         initialization="initialize_cells_random", 
         light_function="no_light", 
+        light_speed = 0.0,
         light_pattern=None, 
         tissue_size = None, 
         margin = None, 
@@ -95,6 +96,7 @@ class CPM:
         self.grid = np.zeros((grid_size, grid_size), dtype=int)
         self.initialization = initialization
         self.light_function = light_function
+        self.light_speed = light_speed
         self.tissue_size = tissue_size
         self.margin = margin
         self.cell_centers = cell_centers

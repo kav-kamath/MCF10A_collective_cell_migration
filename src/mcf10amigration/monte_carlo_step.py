@@ -36,7 +36,7 @@ def monte_carlo_step(cpm: CPM):
         None (Updates CPM grid and mc_step in place.)
 
     """
-    cpm.light_pattern[:,:] = update_light(cpm.grid_size, cpm.light_function, cpm.mc_step)
+    cpm.light_pattern[:,:] = update_light(cpm.grid_size, cpm.light_function, cpm.mc_step, cpm.light_speed)
 
     current_hamiltonian = hams.calculate_hamiltonian(cpm)
     #print("current: ", current_hamiltonian)

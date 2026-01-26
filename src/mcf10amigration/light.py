@@ -66,11 +66,11 @@ def inward_circle_wave_light(y, x, t):
     
     #return (((y - center)**2 + (x - center)**2) >= inner_radius**2) & (((y - center)**2 + (x - center)**2) <= outer_radius**2)
 
-def moving_bar_light(y, x , t):
-    width = 4 # number of pixels
-    speed = 2 #some scaler with respect to time
+def moving_bar_light(y, x , t, light_speed):
+    width = 7 # number of pixels
+    #light_speed = 2 #some scaler with respect to time
 
-    top = (int(t * speed)) % y.shape[0]
+    top = (int(t * light_speed)) % y.shape[0]
     bottom = (top + width) % y.shape[0]
 
     if top < bottom:
@@ -124,11 +124,11 @@ light_methods = {
     "multiple_moving_bars": multiple_moving_bars_light,
 }
 
-def update_light(grid_size, light_function, time_step):
+def update_light(grid_size, light_function, time_step, light_speed):
 
     x_s, y_s = np.meshgrid(np.arange(grid_size), np.arange(grid_size))  # create a grid of x,y coordinates
     
-    return (light_methods[light_function](y_s, x_s, time_step)).astype(int)
+    return (light_methods[light_function](y_s, x_s, time_step, light_speed)).astype(int)
     
     """
     light_pattern = np.zeros((grid_size, grid_size), dtype=int)
