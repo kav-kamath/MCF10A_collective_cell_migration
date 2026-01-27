@@ -110,7 +110,7 @@ def avg_displacement(start_frame, end_frame, direction=None):
     else:
         return centroids_end, centroids_start, twoD_displacements
 
-def visualize_displacement(start_frame, end_frame):
+def visualize_displacement(start_frame, end_frame, title="individual displacement"):
     
     centroids_start = regionprops_table(label_image=start_frame, properties=['centroid'])
     centroids_start = np.column_stack((centroids_start['centroid-0'], centroids_start['centroid-1']))
@@ -139,6 +139,6 @@ def visualize_displacement(start_frame, end_frame):
         color='red'
     )
 
-    plt.title("individual displacement")
+    plt.title(title)
     plt.show()
     
