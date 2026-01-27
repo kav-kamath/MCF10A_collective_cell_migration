@@ -7,7 +7,6 @@ from matplotlib.colors import ListedColormap, BoundaryNorm
 import ffmpeg
 from IPython.display import HTML
 
-import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from matplotlib.animation import FuncAnimation, PillowWriter
 

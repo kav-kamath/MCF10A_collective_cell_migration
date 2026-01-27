@@ -1,6 +1,8 @@
 import random
 import numpy as np
 from .cpm import CPM
+from skimage.measure import regionprops, regionprops_table
+import matplotlib.pyplot as plt
 
 def radial_density(frame: np.ndarray, bin_width:int = 1, method:str = "cell_area"):
         
@@ -88,4 +90,55 @@ def inside_square_count(frame, cy, cx, width):
     unique_cells = unique_cells[unique_cells != 0]
 
     return len(unique_cells)
+    
+def avg_displacement(start_frame, end_frame, direction=None):
+
+    centroids_start = regionprops_table(label_image=start_frame, properties=['centroid'])
+    centroids_start = np.column_stack((centroids_start['centroid-0'], centroids_start['centroid-1']))
+    
+    centroids_end = regionprops_table(label_image=end_frame, properties=['centroid'])
+    centroids_end = np.column_stack((centroids_end['centroid-0'], centroids_end['centroid-1']))
+    
+    twoD_displacements = centroids_end - centroids_start
+    
+    if direction == "both":
+        return np.linalg.norm(twoD_displacements, axis=1)
+    elif direction == "x":
+        return np.mean(twoD_displacements[:,1])
+    elif direction == "y":
+        return np.mean(twoD_displacements[:,0])
+    else:
+        return centroids_end, centroids_start, twoD_displacements
+
+def visualize_displacement(start_frame, end_frame):
+    
+    centroids_start = regionprops_table(label_image=start_frame, properties=['centroid'])
+    centroids_start = np.column_stack((centroids_start['centroid-0'], centroids_start['centroid-1']))
+    
+    centroids_end = regionprops_table(label_image=end_frame, properties=['centroid'])
+    centroids_end = np.column_stack((centroids_end['centroid-0'], centroids_end['centroid-1']))
+    
+    individual_displacements = centroids_end - centroids_start
+    
+    # centroid are (row,column) which is like (y,x)
+    y0 = centroids_start[:, 0]
+    x0 = centroids_start[:, 1]
+    
+    dy = individual_displacements[:, 0]
+    dx = individual_displacements[:, 1]
+
+    plt.figure()
+    plt.imshow(start_frame)
+
+    plt.quiver(
+        x0, y0,
+        dx, dy,
+        angles='xy',
+        scale_units='xy',
+        scale=1,
+        color='red'
+    )
+
+    plt.title("individual displacement")
+    plt.show()
     
