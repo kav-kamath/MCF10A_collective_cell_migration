@@ -3,36 +3,36 @@ import numpy as np
 
 # STATIC LIGHT PATTERN FUNCTIONS
 
-def static_circle_light(y, x, t):
+def static_circle_light(y, x, t, speed):
     center = 37
     radius = 17
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
-def static_left_half_light(y, x, t):
+def static_left_half_light(y, x, t, speed):
     return x <= 17
 
-def static_right_half_light(y, x, t):
+def static_right_half_light(y, x, t, speed):
     return x > 17
 
-def no_light (y, x, t):
+def no_light (y, x, t, speed):
     return x*0
 
 # DYNAMIC LIGHT PATTERN FUNCTIONS
 
-def light_spreading_from_corner(y, x, t):
+def light_spreading_from_corner(y, x, t, speed):
     return ((y+x) <= t)
 
-def shrinking_circle_light(y, x, t):
+def shrinking_circle_light(y, x, t, speed):
     center = 17
     radius = 15 - 0.75*t
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
-def growing_circle_light(y, x, t):
+def growing_circle_light(y, x, t, speed):
     center = 17
     radius = 0 + 0.75*t
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
-def outward_circle_wave_light(y, x, t):
+def outward_circle_wave_light(y, x, t, speed):
     
     # change these values
     center = 37
@@ -51,7 +51,7 @@ def outward_circle_wave_light(y, x, t):
     
     #return (((y - center)**2 + (x - center)**2) >= inner_radius**2) & (((y - center)**2 + (x - center)**2) <= outer_radius**2)
 
-def inward_circle_wave_light(y, x, t):
+def inward_circle_wave_light(y, x, t, speed):
     center = 17
     initial_inner_radius = 31
     initial_outer_radius = 35
@@ -78,7 +78,7 @@ def moving_bar_light(y, x , t, light_speed):
     else: # wrap around (bottom < top)
         return (y >= top) | (y <= bottom)
 
-def multiple_moving_bars_light(y, x , t):
+def multiple_moving_bars_light(y, x , t, speed):
     
     #num_bars = 5
     #width = 3 # number of pixels
