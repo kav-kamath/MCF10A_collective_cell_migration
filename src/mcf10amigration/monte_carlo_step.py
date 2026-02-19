@@ -163,11 +163,15 @@ def mc_sim(cpm, num_steps) -> SimulationResult:
     "lambda_area": cpm.lambda_area,
     "lambda_roundness": cpm.lambda_roundness,
     "lambda_adhesion": cpm.lambda_adhesion,
+    "initialization": cpm.initialization,
     "temperature": cpm.temperature,
     "tissue_size": cpm.tissue_size,
     "margin": cpm.margin,
     "light_function": cpm.light_function,
-    "simulation_runtime" : elapsed_time,
+    "light_speed": cpm.light_speed,
+    "simulation_runtime": elapsed_time,
+    "cell_centers": cpm.cell_centers,
+    "custom_grid": cpm.custom_grid
     }
     
     return SimulationResult(metadata, cell_states, light_patterns, event_times)
