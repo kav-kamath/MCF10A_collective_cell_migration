@@ -24,25 +24,25 @@ def light_spreading_from_corner(y, x, t, speed):
 
 def shrinking_circle_light(y, x, t, speed):
     center = 17
-    radius = 15 - 0.75*t
+    radius = 15 - speed*t
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
 def growing_circle_light(y, x, t, speed):
     center = 17
-    radius = 0 + 0.75*t
+    radius = 0 + speed*t
     return ((y - center)**2 + (x - center)**2) <= radius**2
 
 def outward_circle_wave_light(y, x, t, speed):
     
     # change these values
-    center = 37
+    center = 26
     initial_inner_radius = 0
-    initial_outer_radius = 4
+    initial_outer_radius = 7
     
     # DO NOT CHANGE BELOW
     
-    inner_radius = ((initial_inner_radius + 2*t) % y.shape[0]/2)
-    outer_radius = ((initial_outer_radius + 2*t) % y.shape[0]/2)
+    inner_radius = ((initial_inner_radius + speed*t) % y.shape[0]/2)
+    outer_radius = ((initial_outer_radius + speed*t) % y.shape[0]/2)
     
     #if inner_radius > outer_radius : # specific case when wrapping around when inside is edge of grid and outside is at center
         #return (((y - center)**2 + (x - center)**2) <= inner_radius**2) & (((y - center)**2 + (x - center)**2) >= outer_radius**2)
@@ -56,8 +56,8 @@ def inward_circle_wave_light(y, x, t, speed):
     initial_inner_radius = 31
     initial_outer_radius = 35
     
-    inner_radius = ((initial_inner_radius - 2*t) % y.shape[0]/2)
-    outer_radius = ((initial_outer_radius - 2*t) % y.shape[0]/2)
+    inner_radius = ((initial_inner_radius - speed*t) % y.shape[0]/2)
+    outer_radius = ((initial_outer_radius - speed*t) % y.shape[0]/2)
     
     #if inner_radius > outer_radius : # specific case when wrapping around when inside is edge of grid and outside is at center
         #return (((y - center)**2 + (x - center)**2) <= inner_radius**2) & (((y - center)**2 + (x - center)**2) >= outer_radius**2)
