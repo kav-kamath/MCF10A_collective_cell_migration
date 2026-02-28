@@ -167,6 +167,7 @@ def mc_sim(cpm, num_steps) -> SimulationResult:
     "temperature": cpm.temperature,
     "tissue_size": cpm.tissue_size,
     "margin": cpm.margin,
+    "wound_size": cpm.wound_size,
     "light_function": cpm.light_function,
     "light_speed": cpm.light_speed,
     "simulation_runtime": elapsed_time,

@@ -30,6 +30,7 @@ allowed_initializations = (
     "voronoi",
     "tissue_sparse",
     "tissue_dense",
+    "wound",
     "custom_centers",
     "custom_grid"
 )
@@ -70,7 +71,8 @@ class CPM:
         light_speed = 0.0,
         light_pattern=None, 
         tissue_size = None, 
-        margin = None, 
+        margin = None,
+        wound_size = None, 
         cell_centers = None,
         custom_grid = None
     ):
@@ -99,6 +101,7 @@ class CPM:
         self.light_speed = light_speed
         self.tissue_size = tissue_size
         self.margin = margin
+        self.wound_size = wound_size
         self.cell_centers = cell_centers
         self.custom_grid = custom_grid
         
