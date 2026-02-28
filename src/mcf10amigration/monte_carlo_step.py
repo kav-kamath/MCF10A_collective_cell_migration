@@ -22,6 +22,7 @@ init_methods = {
     "voronoi": initialize_cells_voronoi,
     "tissue_sparse": initialize_cells_tissue_sparse,
     "tissue_dense": initialize_cells_tissue_dense,
+    "wound": initialize_cells_wound,
     "custom_centers": initialize_cells_custom_centers,
     "custom_grid": initialize_cells_custom_grid
 }
