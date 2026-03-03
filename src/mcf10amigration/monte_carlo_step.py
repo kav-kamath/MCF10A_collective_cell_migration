@@ -173,7 +173,8 @@ def mc_sim(cpm, num_steps) -> SimulationResult:
     "light_speed": cpm.light_speed,
     "simulation_runtime": elapsed_time,
     "cell_centers": cpm.cell_centers,
-    "custom_grid": cpm.custom_grid
+    "custom_grid": cpm.custom_grid,
+    "num_steps": num_steps
     }
     
     return SimulationResult(metadata, cell_states, light_patterns, event_times)
