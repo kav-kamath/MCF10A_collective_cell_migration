@@ -3,6 +3,7 @@ import numpy as np
 from .cpm import CPM
 from skimage.measure import regionprops, regionprops_table
 import matplotlib.pyplot as plt
+from matplotlib import colors
 
 def radial_density(frame: np.ndarray, bin_width:int = 1, method:str = "cell_area"):
         
@@ -65,7 +66,7 @@ def inside_circle_count(frame, cy, cx, radius):
     inside_mask = (y_coords - cy)**2 + (x_coords - cx)**2 <= radius**2 #t/f boolean mask
     values_inside = subset[inside_mask] 
 
-    # Count unique non-zero labels
+    # count unique non-zero labels
     unique_cells = np.unique(values_inside)
     unique_cells = unique_cells[unique_cells != 0]
 
@@ -102,13 +103,46 @@ def avg_displacement(start_frame, end_frame, direction=None):
     twoD_displacements = centroids_end - centroids_start
     
     if direction == "both":
-        return np.linalg.norm(twoD_displacements, axis=1)
+        return np.linalg.norm(twoD_displacements, axis=1) # gives disp of each cell
     elif direction == "x":
-        return np.mean(twoD_displacements[:,1])
+        return np.mean(twoD_displacements[:,1]) # gets avg x disp
     elif direction == "y":
-        return np.mean(twoD_displacements[:,0])
+        return np.mean(twoD_displacements[:,0]) # gets avg y disp
     else:
         return centroids_end, centroids_start, twoD_displacements
+
+def avg_distance_from_point(frames, point):
+    assert(type(point) == tuple) # should be (y,x) / (row,col)
+    
+    if(type(frames) == np.ndarray): # if given one frame
+        
+        centroids_sep = regionprops_table(frames, properties=['centroid'])
+
+        centroids = np.column_stack((
+            centroids_sep['centroid-0'],   # y coordinate
+            centroids_sep['centroid-1']    # x coordinate
+        ))
+
+        distances = np.linalg.norm(centroids - np.array(point), axis=1)
+
+        return np.mean(distances)
+
+    if (type(frames) == list): # if given list of frames
+        all_distances = []
+        
+        for frame in frames:
+            centroids_sep = regionprops_table(frame, properties=['centroid'])
+
+            centroids = np.column_stack((
+                centroids_sep['centroid-0'],   # y coordinate
+                centroids_sep['centroid-1']    # x coordinate
+            ))
+
+            distances = np.linalg.norm(centroids - np.array(point), axis=1)
+            all_distances.append(np.mean(distances))
+        
+        return all_distances
+        
 
 def visualize_displacement(start_frame, end_frame, title="individual displacement"):
     
@@ -127,8 +161,14 @@ def visualize_displacement(start_frame, end_frame, title="individual displacemen
     dy = individual_displacements[:, 0]
     dx = individual_displacements[:, 1]
 
+    # create a viridis colormap with 0 mapped to white
+    viridis = plt.colormaps['viridis']
+    newcolors = viridis(np.linspace(0,1,256))
+    newcolors[0] = np.array([1,1,1,1])  # first color (lowest) is white
+    viridis_white0 = colors.ListedColormap(newcolors)
+
     plt.figure()
-    plt.imshow(start_frame)
+    plt.imshow(start_frame, cmap=viridis_white0)
 
     plt.quiver(
         x0, y0,
