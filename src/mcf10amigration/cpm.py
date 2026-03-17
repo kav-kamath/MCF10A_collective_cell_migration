@@ -18,7 +18,9 @@ allowed_light_functions = (
     "shrinking_circle",
     "growing_circle",
     "outward_circle_wave",
+    "multiple_outward_circle_waves",
     "inward_circle_wave",
+    "multiple_inward_circle_waves",
     "moving_bar",
     "multiple_moving_bars"
 )
@@ -68,13 +70,19 @@ class CPM:
         temperature = 1,
         initialization="initialize_cells_random", 
         light_function="no_light", 
-        light_speed = 0.0,
+        light_speed = None,
         light_pattern=None, 
         tissue_size = None, 
         margin = None,
         wound_size = None, 
         cell_centers = None,
-        custom_grid = None
+        custom_grid = None,
+        light_center = None,
+        light_radius = None,
+        light_boundary = None,
+        light_width = None,
+        light_spatial_period = None,
+        light_duty_cycle = None
     ):
         
         if initialization not in allowed_initializations:
@@ -104,6 +112,12 @@ class CPM:
         self.wound_size = wound_size
         self.cell_centers = cell_centers
         self.custom_grid = custom_grid
+        self.light_center = light_center
+        self.light_radius = light_radius
+        self.light_boundary = light_boundary
+        self.light_width = light_width
+        self.light_spatial_period = light_spatial_period
+        self.light_duty_cycle = light_duty_cycle
         
         self.mc_step = 0
         self.gill_time = 0.0

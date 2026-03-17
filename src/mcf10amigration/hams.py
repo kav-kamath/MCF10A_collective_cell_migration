@@ -95,15 +95,12 @@ def calculate_hamiltonian(cpm: CPM):
     props_table = regionprops_table(label_image=cpm.grid, intensity_image=cpm.light_pattern, properties=properties)
 
     # check for no holes or splits
-    # want connectivity=1 (4 neighbors), currently connectivity=2 (8 neighbors)
     if np.any(props_table['euler_number'] != 1):
         return np.inf
 
-    hamiltonian += cpm.lambda_area * np.sum(np.power(np.abs(props_table['area'] - cpm.target_area), 2))
-    hamiltonian += cpm.lambda_roundness * np.sum(np.power(np.abs(props_table['perimeter_crofton'] - (2*np.pi*np.sqrt((props_table['area']/np.pi)))), 4))
-    # hamiltonian += np.sum(np.power(np.abs(props_table['perimeter_crofton'] - cpm.target_perimeter), 4))
-    # hamiltonian -= np.sum(np.power(100 * np.abs(props_table['intensity_mean']), cpm.k)) #1.75 #3.5 #raising frac_illuminated to a power
-    hamiltonian -= cpm.k* np.sum(100 * np.abs(props_table['intensity_mean']))
+    hamiltonian += cpm.lambda_area * np.sum(np.power(props_table['area'] - cpm.target_area, 2))
+    hamiltonian += cpm.lambda_roundness * np.sum(np.power(props_table['perimeter_crofton'] - (2*np.pi*np.sqrt((props_table['area']/np.pi))), 4))
+    hamiltonian -= cpm.k * np.sum(100 * np.abs(props_table['intensity_mean']))
 
     #adhesion energy - introduce penalty if cells separate (i.e. the perimeter of "0" grows)
     hamiltonian += cpm.lambda_adhesion * perimeter_crofton(cpm.grid == 0)
