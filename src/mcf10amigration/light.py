@@ -1,9 +1,9 @@
 import numpy as np
-#from .cpm import CPM
+from .cpm import CPM
 
 # STATIC LIGHT PATTERN FUNCTIONS
 
-def static_circle_light(y, x, t, cpm):
+def static_circle_light(y, x, t, cpm: CPM):
     assert (cpm.light_center is not None), "Please specfiy a light_center value as an integer tuple of format (row,column)"
     assert (type(cpm.light_center[0]) is int), "Please specfiy a light_center value as an integer tuple of format (row,column)"
     assert (type(cpm.light_center[1]) is int), "Please specfiy a light_center value as an integer tuple of format (row,column)"
@@ -15,27 +15,27 @@ def static_circle_light(y, x, t, cpm):
     radius = cpm.light_radius
     return ((y - center[0])**2 + (x - center[1])**2) <= radius**2
 
-def static_left_light(y, x, t, cpm):
+def static_left_light(y, x, t, cpm: CPM):
     assert (cpm.light_boundary is not None), "Please specfiy a light_boundary value"
     
     return x <= cpm.light_boundary
 
-def static_right_light(y, x, t, cpm):
+def static_right_light(y, x, t, cpm: CPM):
     assert (cpm.light_boundary is not None), "Please specfiy a light_boundary value"
     
     return x >= cpm.light_boundary
 
-def no_light (y, x, t, cpm):
+def no_light (y, x, t, cpm: CPM):
     return x*0
 
 # DYNAMIC LIGHT PATTERN FUNCTIONS
 
-def light_spreading_from_corner(y, x, t, cpm):
+def light_spreading_from_corner(y, x, t, cpm: CPM):
     assert (cpm.light_speed is not None), "Please specfiy a light_speed value"
     
     return ((y+x) <= cpm.light_speed, t)
 
-def shrinking_circle_light(y, x, t, cpm):
+def shrinking_circle_light(y, x, t, cpm: CPM):
     assert (cpm.light_center is not None), "Please specfiy a light_center value as an integer tuple of format (row,column)"
     assert (type(cpm.light_center[0]) is int), "Please specfiy a light_center value as an integer tuple of format (row,column)"
     assert (type(cpm.light_center[1]) is int), "Please specfiy a light_center value as an integer tuple of format (row,column)"
@@ -49,7 +49,7 @@ def shrinking_circle_light(y, x, t, cpm):
     radius = cpm.light_radius - cpm.light_speed*t
     return ((y - center[0])**2 + (x - center[1])**2) <= radius**2
 
-def growing_circle_light(y, x, t, cpm):
+def growing_circle_light(y, x, t, cpm: CPM):
     assert (cpm.light_center is not None), "Please specfiy a light_center value as an integer tuple of format (row,column)"
     assert (type(cpm.light_center[0]) is int), "Please specfiy a light_center value as an integer tuple of format (row,column)"
     assert (type(cpm.light_center[1]) is int), "Please specfiy a light_center value as an integer tuple of format (row,column)"
@@ -63,7 +63,7 @@ def growing_circle_light(y, x, t, cpm):
     radius = cpm.light_radius + cpm.light_speed*t
     return ((y - center[0])**2 + (x - center[1])**2) <= radius**2
 
-def outward_circle_wave_light(y, x, t, cpm):
+def outward_circle_wave_light(y, x, t, cpm: CPM):
     assert (cpm.light_center is not None), "Please specfiy a light_center value as an integer tuple of format (row,column)"
     assert (type(cpm.light_center[0]) is int), "Please specfiy a light_center value as an integer tuple of format (row,column)"
     assert (type(cpm.light_center[1]) is int), "Please specfiy a light_center value as an integer tuple of format (row,column)"
@@ -81,7 +81,7 @@ def outward_circle_wave_light(y, x, t, cpm):
     initial_outer_radius = initial_inner_radius + cpm.light_width
     
     max_radius = max(np.sqrt((0 - center[0])**2 + (0 - center[1])**2),                          # dist from center to top left
-                     np.sqrt((0 - center[0])**2 + (y.shape[1]-1 - center[1])**2),               # dist from center to top right
+                     np.sqrt((0 - center[0])**2 + (x.shape[1]-1 - center[1])**2),               # dist from center to top right
                      np.sqrt((y.shape[0]-1 - center[0])**2 + (0 - center[1])**2),               # dist from center to bottom left
                      np.sqrt((y.shape[0]-1 - center[0])**2 + (x.shape[1]-1 - center[1])**2))    # dist from center to bottom right
     
@@ -91,7 +91,7 @@ def outward_circle_wave_light(y, x, t, cpm):
     return (((y - center[0])**2 + (x - center[1])**2) >= inner_radius**2) & (((y - center[0])**2 + (x - center[1])**2) <= outer_radius**2)
     
 
-def multiple_outward_circle_waves_light(y, x, t, cpm):
+def multiple_outward_circle_waves_light(y, x, t, cpm: CPM):
     assert (cpm.light_center is not None), "Please specfiy a light_center value as an integer tuple of format (row,column)"
     assert (type(cpm.light_center[0]) is int), "Please specfiy a light_center value as an integer tuple of format (row,column)"
     assert (type(cpm.light_center[1]) is int), "Please specfiy a light_center value as an integer tuple of format (row,column)"
@@ -114,7 +114,7 @@ def multiple_outward_circle_waves_light(y, x, t, cpm):
     return light_mask
     
     
-def inward_circle_wave_light(y, x, t, cpm):
+def inward_circle_wave_light(y, x, t, cpm: CPM):
     assert (cpm.light_center is not None), "Please specfiy a light_center value as an integer tuple of format (row,column)"
     assert (type(cpm.light_center[0]) is int), "Please specfiy a light_center value as an integer tuple of format (row,column)"
     assert (type(cpm.light_center[1]) is int), "Please specfiy a light_center value as an integer tuple of format (row,column)"
@@ -132,7 +132,7 @@ def inward_circle_wave_light(y, x, t, cpm):
     initial_inner_radius = initial_outer_radius - cpm.light_width
     
     max_radius = max(np.sqrt((0 - center[0])**2 + (0 - center[1])**2),                          # dist from center to top left
-                     np.sqrt((0 - center[0])**2 + (y.shape[1]-1 - center[1])**2),               # dist from center to top right
+                     np.sqrt((0 - center[0])**2 + (x.shape[1]-1 - center[1])**2),               # dist from center to top right
                      np.sqrt((y.shape[0]-1 - center[0])**2 + (0 - center[1])**2),               # dist from center to bottom left
                      np.sqrt((y.shape[0]-1 - center[0])**2 + (x.shape[1]-1 - center[1])**2))    # dist from center to bottom right
     
@@ -142,7 +142,7 @@ def inward_circle_wave_light(y, x, t, cpm):
     return (((y - center[0])**2 + (x - center[1])**2) >= inner_radius**2) & (((y - center[0])**2 + (x - center[1])**2) <= outer_radius**2)
     
     
-def multiple_inward_circle_waves_light(y, x, t, cpm):
+def multiple_inward_circle_waves_light(y, x, t, cpm: CPM):
     assert (cpm.light_center is not None), "Please specfiy a light_center value as an integer tuple of format (row,column)"
     assert (type(cpm.light_center[0]) is int), "Please specfiy a light_center value as an integer tuple of format (row,column)"
     assert (type(cpm.light_center[1]) is int), "Please specfiy a light_center value as an integer tuple of format (row,column)"
@@ -164,7 +164,7 @@ def multiple_inward_circle_waves_light(y, x, t, cpm):
 
     return light_mask
 
-def moving_bar_light(y, x , t, cpm):
+def moving_bar_light(y, x , t, cpm: CPM):
     assert (cpm.light_width is not None), "Please specfiy a light_width value"
     assert (cpm.light_speed is not None), "Please specfiy a light_speed value"
     
@@ -178,7 +178,7 @@ def moving_bar_light(y, x , t, cpm):
     else: # wrap around (bottom < top)
         return (y >= top) | (y <= bottom)
 
-def multiple_moving_bars_light(y, x , t, cpm):
+def multiple_moving_bars_light(y, x , t, cpm: CPM):
     assert (cpm.light_spatial_period is not None), "Please specfiy a light_spatial_period value"
     assert (type(cpm.light_spatial_period) is int), "Please specfiy an integer light_spatial_period value"
     
@@ -236,7 +236,7 @@ light_methods = {
     "multiple_moving_bars": multiple_moving_bars_light,
 }
 
-def update_light(grid_size, light_function, time_step, cpm):
+def update_light(grid_size, light_function, time_step, cpm: CPM):
 
     x_s, y_s = np.meshgrid(np.arange(grid_size), np.arange(grid_size))  # create a grid of x,y coordinates
     

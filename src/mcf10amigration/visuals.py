@@ -166,9 +166,6 @@ def animate_cell_simulation(frames, times, background_color=(1, 1, 1), save_bool
     plt.close(fig)
 
 
-
-
-
 def plot_one_frame(frame, title = None):
     """
     Display only the first CPM simulation frame.

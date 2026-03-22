@@ -171,10 +171,16 @@ def mc_sim(cpm, num_steps) -> SimulationResult:
     "wound_size": cpm.wound_size,
     "light_function": cpm.light_function,
     "light_speed": cpm.light_speed,
-    "simulation_runtime": elapsed_time,
     "cell_centers": cpm.cell_centers,
     "custom_grid": cpm.custom_grid,
-    "num_steps": num_steps
+    "light_center": cpm.light_center,
+    "light_radius": cpm.light_radius,
+    "light_boundary": cpm.light_boundary,
+    "light_width": cpm.light_width,
+    "light_spatial_period": cpm.light_spatial_period,
+    "light_duty_cycle": cpm.light_duty_cycle,
+    "num_steps": num_steps,
+    "simulation_runtime": elapsed_time,
     }
     
     return SimulationResult(metadata, cell_states, light_patterns, event_times)
