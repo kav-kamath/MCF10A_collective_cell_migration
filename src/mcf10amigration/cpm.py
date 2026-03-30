@@ -65,7 +65,7 @@ class CPM:
         target_area=37, 
         k=0, # light-responsiveness parameter
         lambda_area = 1,
-        lambda_roundness = 1,
+        lambda_roundness = 1.0,
         lambda_adhesion = 0,
         temperature = 1,
         initialization="initialize_cells_random", 

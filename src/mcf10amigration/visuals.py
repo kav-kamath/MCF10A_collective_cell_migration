@@ -195,7 +195,7 @@ def plot_one_frame(frame, title = None):
     plt.show()
 
 
-def plot_2x2(frames, cmap):
+def plot_frames(frames, cmap, rows: int, columns: int, subplot_titles, figsize, title=None, dpi = 600, save_fig=True, filename="fig.png"):
     """
     Display a 2x2 grid of the first four CPM simulation frames.
 
@@ -208,15 +208,18 @@ def plot_2x2(frames, cmap):
     """
     
     # Create a 2x2 plot of the first four frames
-    fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+    fig, axes = plt.subplots(rows, columns, figsize=figsize)
     axes = axes.flatten()
 
-    for i in range(4):
+    for i in range(len(frames)):
         axes[i].imshow(frames[i], cmap=cmap, interpolation='nearest')
-        axes[i].set_title(f"Frame {i + 1}")
+        axes[i].set_title(subplot_titles[i])
 
     plt.tight_layout()
+    if save_fig:
+        plt.savefig(filename, dpi=dpi)
     plt.show()
+    
 
 
 def plot_5x5(frames, cmap = None):

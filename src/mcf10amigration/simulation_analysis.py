@@ -144,7 +144,7 @@ def avg_distance_from_point(frames, point):
         return all_distances
         
 
-def visualize_displacement(start_frame, end_frame, title="individual displacement"):
+def visualize_displacement(start_frame, end_frame, title="individual displacement", output_filename="fig.png", save_fig=True):
     
     centroids_start = regionprops_table(label_image=start_frame, properties=['centroid'])
     centroids_start = np.column_stack((centroids_start['centroid-0'], centroids_start['centroid-1']))
@@ -180,5 +180,26 @@ def visualize_displacement(start_frame, end_frame, title="individual displacemen
     )
 
     plt.title(title)
+    if save_fig:
+        plt.savefig(output_filename, dpi=600)
     plt.show()
     
+def cosine_similarity(start_frame, end_frame, target_point):
+    
+    centroids_start = regionprops_table(label_image=start_frame, properties=['centroid'])
+    centroids_start = np.column_stack((centroids_start['centroid-0'], centroids_start['centroid-1']))
+    
+    centroids_end = regionprops_table(label_image=end_frame, properties=['centroid'])
+    centroids_end = np.column_stack((centroids_end['centroid-0'], centroids_end['centroid-1']))
+    
+    target_point = np.array(target_point)
+    expected_displacements_direction = target_point - centroids_start
+    individual_displacements = centroids_end - centroids_start
+    
+    # cos(θ) = (v dot u) / (||v|| * ||u||)  
+    v_dot_u = np.sum(expected_displacements_direction * individual_displacements, axis=1)
+    v_norm = np.linalg.norm(expected_displacements_direction, axis=1)
+    u_norm = np.linalg.norm(individual_displacements, axis=1)
+    cos_theta_vector = v_dot_u / (v_norm*u_norm)
+    
+    return cos_theta_vector, u_norm
