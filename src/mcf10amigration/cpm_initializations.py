@@ -382,6 +382,12 @@ def initialize_cells_wound(cpm: CPM):
                                     new_cell_id.append(cpm.grid[ny, nx])
                     random_id = random.choice(new_cell_id) #choose new ID randomly
                     cpm.grid[y, x] = random_id
+    
+    # write 0s over wound space, to catch cells protruding into what should be empty space
+    #for y in range(margin, N-margin):
+    #    for x in range(margin, N-margin):
+    #        if (x - center)**2 + (y - center)**2 < wound_size**2:
+    #            cpm.grid[y, x] = 0
 
 ## CUSTOM (customize cell centers) ##
 def initialize_cells_custom_centers(cpm: CPM):        

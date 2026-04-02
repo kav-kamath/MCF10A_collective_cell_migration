@@ -73,15 +73,15 @@ def inside_circle_count(frame, cy, cx, radius):
     return len(unique_cells)
     
     
-def inside_square_count(frame, cy, cx, width):
+def inside_square_count(frame, cy, cx, halfwidth):
 
     n = frame.shape[0]
 
     # bounding box to prevent wrapping
-    y_min = max(0, cy-width)
-    y_max = min(n, cy+width)
-    x_min = max(0, cx-width)
-    x_max = min(n, cx+width)
+    y_min = max(0, cy-halfwidth)
+    y_max = min(n, cy+halfwidth)
+    x_min = max(0, cx-halfwidth)
+    x_max = min(n, cx+halfwidth)
     
     # local region
     values_inside = frame[y_min:y_max, x_min:x_max]

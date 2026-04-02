@@ -4,7 +4,7 @@ from skimage.measure import perimeter, perimeter_crofton, regionprops, regionpro
 from .cpm import CPM
 
 # updated to be skimage.measure.regionprops() perimeter
-def _calculate_perimeter(cpm: CPM, cell_id):
+def calculate_perimeter(cpm: CPM, cell_id):
 
     # skimage.measure.regionprops() perimeter
     binary_grid = (cpm.grid == cell_id)
@@ -12,7 +12,7 @@ def _calculate_perimeter(cpm: CPM, cell_id):
 
     return perimeter_value
 
-def _fraction_illuminated(cpm: CPM, cell_id):
+def fraction_illuminated(cpm: CPM, cell_id):
     
     props = regionprops(label_image=cpm.grid, intensity_image=cpm.light_pattern)
     region = next((r for r in props if r.label == cell_id), None)
@@ -38,14 +38,14 @@ def _fraction_illuminated(cpm: CPM, cell_id):
     """
 
 
-def _cell_contains_holes(cpm: CPM, cell_id):
+def cell_contains_holes(cpm: CPM, cell_id):
     
 
     cell_mask = (cpm.grid == cell_id).astype(np.uint8)  # binary mask for the cell
     
     # check that the cell has only one connected component
     labeled_array, num_features = label(cell_mask) # possibly: intepreter misreading the type of self.grid, totally fine at runtime
-    assert num_features == 1, f"Expected exactly 1 connnected component, found {num_features}"
+    assert num_features == 1, f"want exactly 1 connnected component, found {num_features}"
 
     # get region properties (of interest: euler number)
     props = regionprops(cell_mask)

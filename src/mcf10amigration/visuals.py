@@ -66,11 +66,18 @@ def animate_light_pattern(light_patterns, times, background_color=(1, 1, 1), sav
         None (Creates and optionally saves the animation to file. Does not display it.)
     """
 
-    # custom colormap
-    cmap = ListedColormap([background_color, (0, 1, 1)])  # background color and green/blue for light
+    #cmap = ListedColormap([background_color, (0, 1, 1)])  # background color and green/blue for light
+    colors_dict = {0: background_color, 1: (0, 1, 1)}
+
+    sorted_ids = sorted(colors_dict.keys())
+    color_array = np.array([colors_dict[i] for i in sorted_ids])
+    cmap = ListedColormap(color_array)
+    
+    boundaries = np.array(sorted_ids + [max(sorted_ids)+1]) - 0.5
+    norm = BoundaryNorm(boundaries, cmap.N)
 
     fig, ax = plt.subplots()
-    image = ax.imshow(light_patterns[0], cmap=cmap, interpolation='nearest', vmax=1)
+    image = ax.imshow(light_patterns[0], cmap=cmap, norm=norm, interpolation='nearest')
 
     def update(frame_idx):
         image.set_array(light_patterns[frame_idx])
@@ -86,7 +93,7 @@ def animate_light_pattern(light_patterns, times, background_color=(1, 1, 1), sav
     #return HTML(ani.to_jshtml())
 
 
-def animate_cell_simulation_old(frames, times, background_color=(1, 1, 1), save_boolean=True, output_filename="current_simulation.mp4", fps=5):
+def _animate_cell_simulation_old(frames, times, background_color=(1, 1, 1), save_boolean=True, output_filename="current_simulation.mp4", fps=5):
     # doesn't account for changeing number of items (e.g. if there isn't any background in frame 0 but there is in frame 1 from cells shrinking)
     """
     Create (and optionally save to file) animation of CPM grid over the course of a simulation.
@@ -145,7 +152,7 @@ def animate_cell_simulation(frames, times, background_color=(1, 1, 1), save_bool
     color_array = np.array([colors_dict[id] for id in sorted_ids])
     cmap = ListedColormap(color_array)
 
-    # BoundaryNorm ensures each ID maps exactly to the correct color
+    # boundaryNorm makes each ID always map to the correct color
     boundaries = np.array(sorted_ids + [max(sorted_ids)+1]) - 0.5
     norm = BoundaryNorm(boundaries, cmap.N)
 
@@ -166,7 +173,7 @@ def animate_cell_simulation(frames, times, background_color=(1, 1, 1), save_bool
     plt.close(fig)
 
 
-def plot_one_frame(frame, title = None):
+def plot_one_frame(frame, title = None, output_filename = "fig.png", dpi=600,save_fig=True):
     """
     Display only the first CPM simulation frame.
 
@@ -192,10 +199,12 @@ def plot_one_frame(frame, title = None):
 
     ax.set_aspect("equal")
     plt.tight_layout()
+    if save_fig:
+        plt.savefig(output_filename, dpi=dpi)
     plt.show()
 
 
-def plot_frames(frames, cmap, rows: int, columns: int, subplot_titles, figsize, title=None, dpi = 600, save_fig=True, filename="fig.png"):
+def plot_frames(frames, cmap, rows: int, columns: int, figsize, subplot_titles = None, title=None, dpi = 600, save_fig=True, filename="fig.png"):
     """
     Display a 2x2 grid of the first four CPM simulation frames.
 
@@ -213,8 +222,12 @@ def plot_frames(frames, cmap, rows: int, columns: int, subplot_titles, figsize, 
 
     for i in range(len(frames)):
         axes[i].imshow(frames[i], cmap=cmap, interpolation='nearest')
-        axes[i].set_title(subplot_titles[i])
+        if subplot_titles is not None:
+            axes[i].set_title(subplot_titles[i])
 
+    if title is not None:
+        plt.suptitle(title)
+        
     plt.tight_layout()
     if save_fig:
         plt.savefig(filename, dpi=dpi)
@@ -222,7 +235,7 @@ def plot_frames(frames, cmap, rows: int, columns: int, subplot_titles, figsize, 
     
 
 
-def plot_5x5(frames, cmap = None):
+def _plot_5x5(frames, cmap = None):
     """
     Display a 5x5 grid of the first 25 CPM simulation frames.
 
@@ -272,7 +285,7 @@ def plot_event_times(event_times, sim_type="Gillespie"):
     if (sim_type == "Monte Carlo"):
         print("Notes:")
         print("Average waiting time is trivial for Monte Carlo simulations, as events occur at each integer step.")
-        print("Simulation time corresponds to step number, not time.")
+        print("Simulation time corresponds to step number, not real time.")
     
     #get avg waiting time
     waiting_times = np.diff(event_times)

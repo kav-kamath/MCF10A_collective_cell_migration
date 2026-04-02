@@ -33,7 +33,7 @@ def no_light (y, x, t, cpm: CPM):
 def light_spreading_from_corner(y, x, t, cpm: CPM):
     assert (cpm.light_speed is not None), "Please specfiy a light_speed value"
     
-    return ((y+x) <= cpm.light_speed, t)
+    return ((y+x) <= cpm.light_speed*t)
 
 def shrinking_circle_light(y, x, t, cpm: CPM):
     assert (cpm.light_center is not None), "Please specfiy a light_center value as an integer tuple of format (row,column)"
@@ -47,7 +47,10 @@ def shrinking_circle_light(y, x, t, cpm: CPM):
     
     center = cpm.light_center
     radius = cpm.light_radius - cpm.light_speed*t
-    return ((y - center[0])**2 + (x - center[1])**2) <= radius**2
+    if (radius >= 0):
+        return ((y - center[0])**2 + (x - center[1])**2) <= radius**2
+    else:
+        return x*0
 
 def growing_circle_light(y, x, t, cpm: CPM):
     assert (cpm.light_center is not None), "Please specfiy a light_center value as an integer tuple of format (row,column)"
@@ -187,7 +190,7 @@ def multiple_moving_bars_light(y, x , t, cpm: CPM):
 
     spatial_period = cpm.light_spatial_period                      # width + distance_between_bars
     duty_cycle = cpm.light_duty_cycle                              # width / spatial_period (fraction of period that is lit up)
-    width = spatial_period * duty_cycle
+    width = int(spatial_period * duty_cycle)
     
     y_shifted = (y - (t*cpm.light_speed)) % spatial_period # modulo over sptial period will give where y is in respect to spatial period
 

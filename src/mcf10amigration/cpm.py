@@ -11,8 +11,8 @@ from skimage.measure import perimeter
 
 allowed_light_functions = (
     "static_circle",
-    "static_left_half",
-    "static_right_half",
+    "static_left",
+    "static_right",
     "no_light",
     "spreading_from_corner",
     "shrinking_circle",

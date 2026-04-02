@@ -19,7 +19,7 @@ def gillespie_step(cpm: CPM):
         None (Updates  CPM grid and gill_time in place.)
     """    
     
-    cpm.light_pattern[:,:] = update_light(cpm.grid_size, cpm.light_function, cpm.gill_time)
+    cpm.light_pattern[:,:] = update_light(cpm.grid_size, cpm.light_function, cpm.gill_time, cpm)
     
     events = []
     rates = []
@@ -124,7 +124,7 @@ def gillespie_sim(cpm: CPM, max_time):
         
         tc = cpm.gill_time - prev_time
         if tc > 0:
-            progress_bar.update(tc)
+            progress_bar.update(int(tc))
     progress_bar.close()
 
     return frames_for_plot, light_patterns, event_times
