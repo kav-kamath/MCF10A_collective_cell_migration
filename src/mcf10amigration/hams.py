@@ -5,6 +5,17 @@ from .cpm import CPM
 
 # updated to be skimage.measure.regionprops() perimeter
 def calculate_perimeter(cpm: CPM, cell_id):
+    """
+    Calculates perimeter of indicated cell.
+    No longer used in calulcate_hamiltonain() function but kept for individual use.
+    
+    Parameters
+        cpm : CPM - CPM object as defined in cpm.py
+        cell_id : int - label corresponding to cell of interest
+
+    Returns
+        perimeter_value : float - perimeter_crofton of cell of interest
+    """
 
     # skimage.measure.regionprops() perimeter
     binary_grid = (cpm.grid == cell_id)
@@ -13,6 +24,18 @@ def calculate_perimeter(cpm: CPM, cell_id):
     return perimeter_value
 
 def fraction_illuminated(cpm: CPM, cell_id):
+    """
+    Computes the mean intensity of the specified cell from the current binary light pattern, 
+    which represents the fraction illuminated.
+    No longer used in calulcate_hamiltonain() function but kept for individual use.
+    
+    Parameters
+        cpm : CPM - CPM object as defined in cpm.py
+        cell_id : int - label corresponding to cell of interest
+
+    Returns
+        float - fraction illuminated of cell of interest
+    """
     
     props = regionprops(label_image=cpm.grid, intensity_image=cpm.light_pattern)
     region = next((r for r in props if r.label == cell_id), None)
@@ -39,8 +62,19 @@ def fraction_illuminated(cpm: CPM, cell_id):
 
 
 def cell_contains_holes(cpm: CPM, cell_id):
+    """
+    Computes the number of connected components and euler number of the specified cell
+    to confirm 1 connected component and no holes.
+    No longer used in calulcate_hamiltonain() function but kept for individual use.
     
+    Parameters
+        cpm : CPM - CPM object as defined in cpm.py
+        cell_id : int - label corresponding to cell of interest
 
+    Returns
+        boolean - True if cell of interest contains 1 connected component with no holes, False otherwise
+    """
+    
     cell_mask = (cpm.grid == cell_id).astype(np.uint8)  # binary mask for the cell
     
     # check that the cell has only one connected component
@@ -74,7 +108,8 @@ def calculate_hamiltonian(cpm: CPM):
 
     This Hamiltonian includes the following energy contributions for each cell:
     - Area deviation from the target area.
-    - Deviation of the perimeter-to-area ratio from the target ratio.
+    - Deviation of the perimeter from ideal perimeter for current area.
+    - Adhesion consideration; energy of the system is reduced when empty space perimeter decreases (more cell-to-cell adhesion)
     - Light consideration; energy of the cell is reduced if in an illuminated regions.
 
     Parameters

@@ -17,6 +17,8 @@ def initialize_cells_random(cpm: CPM): #choose cell centers randomly
 
     Parameters:
         cpm : CPM
+    Parameters cpm must have:
+        num_cells : int - number of cells
     Returns:
         None (Updates the CPM grid and updates the number of cells in case it changed.)
     """
@@ -89,7 +91,6 @@ def initialize_cells_space_filling(cpm: CPM):
 
     Starts with the ideal uniform placement of cells, then fills empty spaces by assigning each empty pixel the ID of a randomly chosen, directly neighboring cell.
 
-
     Parameters:
         cpm : CPM
     Returns:
@@ -124,6 +125,8 @@ def initialize_cells_voronoi(cpm: CPM):
 
     Parameters:
         cpm : CPM
+    Parameters cpm must have:
+        num_cells : int - number of centers
     Returns:
         None (Updates the CPM grid.)
     """
@@ -177,8 +180,9 @@ def initialize_cells_tissue_sparse(cpm: CPM):
 
     Parameters:
         cpm : CPM
-        margin : int or None, specified margin space
-        tissue_size : int or None, pecified tissue size
+    Parameters cpm must have:
+        margin : int or None - specified margin space
+        tissue_size : int or None - specified tissue size
     Returns:
         None (Updates the CPM grid.)
     """
@@ -225,12 +229,13 @@ def initialize_cells_tissue_sparse(cpm: CPM):
 
 def initialize_cells_tissue_dense(cpm: CPM): 
     """
-    Initialize cells by placing initializing with ideal logic (see above), but reducing grid space for cells by margin amount.
+    Initialize cells by placing initializing with space_filling logic (see above), but reducing grid space for cells by margin amount.
 
     Parameters:
         cpm : CPM
-        margin : int or None, specified margin space
-        tissue_size : int or None, pecified tissue size
+    Parameters cpm must have:
+        margin : int or None - specified margin space
+        tissue_size : int or None - specified tissue size
     Returns:
         None (Updates the CPM grid.)
     """
@@ -293,12 +298,16 @@ def initialize_cells_tissue_dense(cpm: CPM):
 
 def initialize_cells_wound(cpm: CPM): 
     """
-    Initialize cells by placing initializing with ideal logic (see above), but reducing grid space for cells by margin amount.
+    Initialize cells by placing initializing space-filling logic (see above), but reducing grid space for cells by margin amount.
+    
+    Circular wound with specified radius is also carved out.
 
     Parameters:
         cpm : CPM
-        margin : int or None, specified margin space
-        tissue_size : int or None, pecified tissue size
+    Parameters cpm must have:
+        margin : int or None - specified margin space
+        tissue_size : int or None, specified tissue size
+        wound_size : int or None - radius of wound
     Returns:
         None (Updates the CPM grid.)
     """
@@ -396,6 +405,8 @@ def initialize_cells_custom_centers(cpm: CPM):
 
     Parameters:
         self : CPM
+    Parameters cpm must have:
+        cell_centers : list of tuples - list of cell centers formatted as tuples (y,x) or (row,col)
     Returns:
         None (Updates the CPM grid and num_cells in case it changed.)
     """
@@ -456,6 +467,8 @@ def initialize_cells_custom_grid(cpm: CPM):
 
     Parameters:
         self : CPM
+    Parameters cpm must have:
+        custom_grid : Numpy nd.array - starting cell state grid, hard-coded
     Returns:
         None (Updates the CPM grid.)
     """

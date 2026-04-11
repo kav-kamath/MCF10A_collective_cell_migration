@@ -41,19 +41,43 @@ class CPM:
     """
     Initialize a Cellular Potts Model (CPM) simulation grid with specified parameters.
 
-    The CPM class models cells on a 2D grid with a Hamiltonian that includes area, perimeter, 
-    and illumination-related energy terms. The constructor sets up the grid, initializes 
-    cells according to a chosen method, and applies a light pattern mask if provided.
+    The CPM class models cells on a 2D grid with a Hamiltonian that includes area, perimeter,
+    adhesion, and illumination-related energy terms. The constructor intializes the cell state 
+    grid and the illumination grid, and holds model/simulation parameters.
 
     Parameters:
         grid_size : int - width and height of the square simulation grid.
         num_cells : int - number of cells to initialize on the grid
         target_area : float - ideal cell area to be used in the Hamiltonian energy calculations
-        target_ratio : float - ideal ratio of cell area to perimeter to be used in the Hamiltonian energy calculations
-        temperature : float - simulation temperature controlling stochastic acceptance in mc/gillespie step
+        k : int - light responsiveness parameter
+        lambda_area : float - area penalty parameter
+        lambda_roundness : float - perimeter penalty parameter
+        lambda_adhesion : int - (lack of) adhesion penalty parameter
+        temperature : float - simulation temperature controlling stochastic acceptance of potential events
         initialization : str - name of method for initializing cells on the grid. Valid options are:
-            "random", "ideal", "space_filling", "voronoi", "custom1", or "custom2".
-        light_pattern : array-like or None - binary 2D array indicating regions of illumination.
+            "random", "ideal", "space_filling", "voronoi", "tissue_sparse", "tissue_dense", "wound", "custom_centers", "custom_grid"
+        light_function : str - name of method for initializing illumination function over grid. Valid options are:
+            "no_light", "static_circle", "static_left", "static_right", 
+            "spreading_from_corner", "moving_bar", "multiple_moving_bars", "shrinking_circle", "growing_circle",
+            "outward_circle_wave", "multiple_outward_circle_waves", "inward_circle_wave", "multiple_inward_circle_waves"         
+        light_speed : float or None - speed of light movement in light function, used when light function is dynamic
+        light_pattern : Numpy ndarray or None - starting binary 2D array indicating regions of illumination
+        tissue_size : int or None - width of tissue for "tissue_sparse", "tissue_dense", and "wound" intializations
+        margin : int or None - margin of empty space around tissue for "tissue_sparse", "tissue_dense", and "wound" intializations
+        wound_size : int or None - radius of wound for "wound" initializations
+        cell_centers : list of tuples or None - list of cell centers for "custom_centers" initialization
+        custom_grid : Numpy ndarray or None - custom starting cell state grid for "custom_grid" initialization
+        light_center : tuple of ints or None - center of illumination pattern for "static_circle", "shrinking_circle", "growing_circle", 
+            "outward_circle_wave", "multiple_outward_circle_waves", "inward_circle_wave", and "multiple_inward_circle_waves" illumination functions
+        light_radius : int or None - radius of (starting) illumination pattern for "static_circle", "shrinking_circle", "growing_circle", 
+            "outward_circle_wave", and "inward_circle_wave" illumination functions
+        light_boundary : int or None - illumination boundary for "static_left" and "static_right" illumination functions
+        light_width : int or None - width of wave in "outward_circle_wave", "inward_circle_wave", and "moving_bar" illumination functions
+        light_spatial_period : int or None - spatial period for "multiple_outward_circle_waves", "multiple_inward_circle_waves", 
+            and "multiple_moving_bars" illumination functions
+        light_duty_cycle : float or None - fraction of sptial period that is illuminated for "multiple_outward_circle_waves", 
+            "multiple_inward_circle_waves", and "multiple_moving_bars" illumination functions
+        
     Returns:
         None (Initializes the CPM grid and parameters.)
     """
@@ -64,7 +88,7 @@ class CPM:
         num_cells=1, 
         target_area=37, 
         k=0, # light-responsiveness parameter
-        lambda_area = 1,
+        lambda_area = 1.0,
         lambda_roundness = 1.0,
         lambda_adhesion = 0,
         temperature = 1,
