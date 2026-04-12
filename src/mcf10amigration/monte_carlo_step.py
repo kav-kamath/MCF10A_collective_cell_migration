@@ -10,6 +10,7 @@ from .cpm_initializations import *
 
 @dataclass
 class SimulationResult:
+    """For clean access and return of information from completed simulation."""
     metadata: dict
     cell_states: list
     light_patterns: list

@@ -100,6 +100,7 @@ def gillespie_sim(cpm: CPM, max_time):
 
     Returns
         frames_for_plot : list of np.ndarray - list of grid (2D NumPy arrays) at/after each Gillespie event
+        light_patterns : list of np.ndarray - list of illumination grid (2D NumPy arrays) at/after each Gillespie event
         event_times : list of float - list each time a gillespie event occured, 1:1 corresponds to frames_for_plot
             (arbitrary time units / units contrived from model)
     """

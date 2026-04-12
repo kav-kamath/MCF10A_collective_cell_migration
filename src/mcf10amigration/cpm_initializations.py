@@ -404,7 +404,7 @@ def initialize_cells_custom_centers(cpm: CPM):
     Initialize cells with specified cell centers. Later listed cells may overlap with and overwrite formerly listed cells.
 
     Parameters:
-        self : CPM
+        cpm : CPM
     Parameters cpm must have:
         cell_centers : list of tuples - list of cell centers formatted as tuples (y,x) or (row,col)
     Returns:
@@ -466,7 +466,7 @@ def initialize_cells_custom_grid(cpm: CPM):
     Initialize cells with hardcoded layout.
 
     Parameters:
-        self : CPM
+        cpm : CPM
     Parameters cpm must have:
         custom_grid : Numpy nd.array - starting cell state grid, hard-coded
     Returns:
