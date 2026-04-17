@@ -1,7 +1,7 @@
 import random
 import numpy as np
 from .cpm import CPM
-from skimage.measure import regionprops, regionprops_table
+from skimage.measure import regionprops, regionprops_table, label
 import matplotlib.pyplot as plt
 from matplotlib import colors
 
@@ -203,3 +203,16 @@ def cosine_similarity(start_frame, end_frame, target_point):
     cos_theta_vector = v_dot_u / (v_norm*u_norm)
     
     return cos_theta_vector, u_norm
+
+def middle_zero_region_size(frame):
+
+    zero_mask = (frame == 0)
+    labeled_mask = label(zero_mask)
+    
+    cy = frame.shape[0] // 2
+    cx = frame.shape[1] // 2
+    center_label = labeled_mask[cy, cx]
+
+    for r in regionprops(labeled_mask):
+        if r.label == center_label:
+            return r.area
