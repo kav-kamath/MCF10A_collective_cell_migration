@@ -1,4 +1,4 @@
-Full README coming soom :)
+# Full README coming soom :)
 
 ***Directory of functions:***
 
